@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $mail = new PHPMailer(true);
                     try {
                         $mail->isSMTP();
-                        $mail->Host       = 'smtp.gmail.com';
+                        $mail->Host       = 'smtp.hostinger.com';
                         $mail->SMTPAuth   = true;
                         $mail->Username   = 'ejivancablanida@gmail.com'; 
                         $mail->Password   = 'acjf ngko qlfb cuju'; 
