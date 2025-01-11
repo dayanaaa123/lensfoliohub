@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <link rel="icon" href="assets/img/profile.jpg" type="image/png">
+    <link rel="icon" href="../../../../assets/profile.jpg" type="image/png">
     <title>LENSFOLIOHUB</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
