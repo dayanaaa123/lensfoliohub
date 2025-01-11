@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // Send verification email
                     $mail = new PHPMailer(true);
                     try {
+                        $mail->SMTPDebug = 2;
                         $mail->isSMTP();
                         $mail->Host       = 'smtp.hostinger.com';
                         $mail->SMTPAuth   = true;
