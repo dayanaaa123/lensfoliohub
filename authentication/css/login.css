@@ -1,0 +1,292 @@
+
+
+*{
+      font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f0e3; 
+    background-image: url('../../assets/img/authen-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative; 
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); 
+    z-index: 0;
+}
+.scene {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.container, .container2 {
+    width: 70%;
+    display: flex;
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease-in-out;
+    backface-visibility: hidden;
+
+}
+ .box1, .box2 {
+    width: 90%;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    
+}
+
+.box1 p{
+    width: 90%;
+    display: flex;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.wrapper{
+    width: 80%;
+}
+.a-reg{
+    font-size: 14px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.a-reg:hover{
+    font-weight:500;
+}
+
+
+.forgot{
+    margin-left: auto;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+}
+.wrapper button, .registerbtn, .loginbtn{
+  padding: 8px 0;
+  border: none;
+  border-radius: 5px;
+  width: 90%;
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  background-color: #FFFFFF;
+}
+
+.loginbtn{
+    margin: 0 !important;
+}
+
+
+.wrapper button:hover, .registerbtn:hover, .loginbtn:hover{
+    background-color: #fdf4f4e8;
+    color: #000;
+}
+
+
+.box11, .box33{
+    padding-top: 12%;
+}
+
+.box22, .box33, .box44{
+    margin-left: -10px;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+
+}
+
+
+.box22 img{
+    width: 50px;
+    height: 50px;
+}
+
+.box22 label, .box33 label{
+     color: #fff;
+     margin-bottom: 2px;
+     margin-top: 10px;
+     align-self: start;
+}
+
+.box33 label{
+    padding-left: 5%;
+}
+
+
+
+
+
+
+
+
+
+.box44{
+    margin-left: -10px;
+}
+h3{
+    font-weight: bold;
+    color: #fff;
+ 
+}
+
+.create-account{
+    font-size: 24px;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  
+  .input-field {
+    position: relative;
+    border-bottom: 2px solid #ccc;
+    margin: 10px 0;
+  }
+
+  select{
+    margin: 10px 0;
+    padding-left: 20px;
+  }
+  
+  .input-field label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 16px;
+    pointer-events: none;
+    transition: 0.15s ease;
+  }
+  
+  .input-field input {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  select, option{
+    width: 100%;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #000;
+  }
+  
+  .input-field input:focus ~ label,
+  .input-field input:valid ~ label {
+    font-size: 0.8rem;
+    top: 10px;
+    transform: translateY(-120%);
+  }
+.lined{
+    border-top: 2px solid #fff;
+    width: 100%;
+}
+.form-group{
+    display: flex;
+    justify-content: space-around;
+}
+
+.alert-error {
+    background-color: #f44336; 
+    color: white;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 15px;
+    margin-bottom: 5px;
+}
+
+
+.hidden-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.radio-group{
+    display: flex;
+   
+}
+
+.radio-group label{
+    padding: 0 !important;
+    margin: 5px;
+}
+
+
+
+
+.container {
+    transform: rotateY(0deg);
+}
+
+.container2 {
+    transform: rotateY(180deg);
+}
+
+.flip .container {
+    transform: rotateY(-180deg);
+}
+
+.flip .container2 {
+    transform: rotateY(0deg);
+}
+
+@media (max-width: 767px) {
+    .container, .container2 {
+        width: 90%; /* Make the container take more width on mobile */
+        flex-direction: column; /* Stack box1 on top of box2 for mobile */
+    }
+
+    .box1, .box2 {
+        width: 100%; /* Make each box take the full width */
+        margin: 0;
+    }
+
+    .box1 {
+        margin-bottom: 20px; /* Add some spacing between box1 and box2 */
+    }
+}
+
+
