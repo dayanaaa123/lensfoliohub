@@ -6,20 +6,33 @@ $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
 $profileImg = ''; 
 
-if ($role != 'guest' && !empty($email)) {
-   include 'db/db.php'; 
+// Include your database connection file
+include 'db/db.php'; 
 
-    $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->bind_result($profileImg);
-    $stmt->fetch();
-    $stmt->close();
-    $conn->close();
+// Check if the connection is successful
+if ($conn) {
+    echo "Database connection successful!<br>";
 
-  
+    if ($role != 'guest' && !empty($email)) {
+        $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
+        if ($stmt) {
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->bind_result($profileImg);
+            $stmt->fetch();
+            $stmt->close();
+        } else {
+            echo "Failed to prepare statement: " . $conn->error;
+        }
+    }
+} else {
+    echo "Database connection failed: " . mysqli_connect_error();
 }
+
+// Close the database connection
+$conn->close();
 ?>
+
 
 
 
