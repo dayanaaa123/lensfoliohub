@@ -88,8 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $mail->isSMTP();
                         $mail->Host       = 'smtp.hostinger.com';
                         $mail->SMTPAuth   = true;
-                        $mail->Username   = 'ejivancablanida@gmail.com'; 
-                        $mail->Password   = 'acjf ngko qlfb cuju'; 
+                        $mail->Username   = 'lensfoliohub@lensfoliohub.com'; 
+                        $mail->Password   = '#Bakitako23'; 
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port       = 587;
 
@@ -365,7 +365,7 @@ document.getElementById('resetCodeForm').addEventListener('submit', function(e) 
         <!-- Additional Fields for Supplier -->
         <div id="supplierFields" class="roleFields" style="display:none;">
             <div class="input-field">
-                <input type="url" name="social_link" required>
+                <input type="url" name="social_link">
                 <label for="social_link">Enter your fb/ig link</label>
             </div>
 			<div class="input-field d-flex justify-content-start">		
