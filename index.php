@@ -11,7 +11,6 @@ include 'db/db.php';
 
 // Check if the connection is successful
 if ($conn) {
-    echo "Database connection successful!<br>";
 
     if ($role != 'guest' && !empty($email)) {
         $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
@@ -26,7 +25,6 @@ if ($conn) {
         }
     }
 } else {
-    echo "Database connection failed: " . mysqli_connect_error();
 }
 
 // Close the database connection

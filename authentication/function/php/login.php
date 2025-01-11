@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Fetch user details from users table
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND verify_status = 1");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
