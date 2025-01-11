@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $mail->Port       = 587;
 
                         // Recipients
-                        $mail->setFrom('lensfoliohub@gmail.com', 'LENSFOLIOHUB');
+                        $mail->setFrom('lensfoliohub@lensfoliohub.com', 'LENSFOLIOHUB');
                         $mail->addAddress($email);
 
                         // Content
