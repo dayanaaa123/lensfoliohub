@@ -16,8 +16,41 @@ if (isset($_GET['email_uploader'])) {
     $emailUploader = htmlspecialchars($_POST['email_uploader']);
 }
 
-if ($emailUploader) {
+require '../../../../db/db.php';
+$sqlClient = "SELECT name FROM users WHERE email = ?";
+$stmtClient = $conn->prepare($sqlClient);
+$stmtClient->bind_param("s", $email); // Bind the session email
+$stmtClient->execute();
+$resultClient = $stmtClient->get_result();
 
+if ($resultClient->num_rows > 0) {
+    // Fetch the first_name and last_name from the result
+    $rowClient = $resultClient->fetch_assoc();
+    $clientName = $rowClient['name'];
+}
+
+$stmtClient->close();
+
+if ($emailUploader != '') {
+    $sql = "SELECT name FROM about_me WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $emailUploader); // Bind the email parameter
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Fetch the name from the result
+        $row = $result->fetch_assoc();
+        $supplierName = $row['name']; // Store the supplier's name
+    } else {
+        $supplierName = "Unknown"; // Default value if no match found
+    }
+
+} else {
+    $supplierName = "Unknown"; // Default value if email_uploader is not set
+}
+
+if ($emailUploader) {
     require '../../../../db/db.php';
 
     // Initialize an array for time options
@@ -242,10 +275,70 @@ if ($emailUploader) {
         <input type="hidden" id="selected_date" name="selected_date">
         <input type="hidden" name="email_uploader" id="email_uploader">
         <input type="hidden" name="email" id="email" value="<?php echo isset($_SESSION['email']) ? $_SESSION['email'] : ''; ?>">
+        
+        <div class="col-10 d-flex gap-1 mt-2 book">
+            <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="agreementCheckbox" required>
+            <label class="form-check-label" for="agreementCheckbox">By checking this box, you agree to the terms and conditions.</label>
+        </div>
+        </div>
         <div class="col-10 d-flex gap-1 mt-2 book">
             <button type="submit" class="btn mt-2">Book</button>
         </div>
     </form>
+
+    <div class="modal fade" id="agreementModal" tabindex="-1" aria-labelledby="agreementModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="agreementModalLabel">Agreement</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>1. PARTIES</strong><br>
+        - SUPPLIER: <?php echo $supplierName; ?><br>
+        - CLIENT:  <?php echo $clientName; ?><br>
+        - EFFECTIVE DATE: <?php $currentDate = date("F j, Y"); ?><?php echo  $currentDate; ?></p>
+        <p><strong>2. TERM</strong><br>
+        [Length of agreement, e.g., project-based, ongoing]</p>
+        <p><strong>3. DIGITAL PLATFORM</strong><br>
+        Lensfoliohub</p>
+        <p><strong>SCOPE OF WORK</strong><br>
+        1. The Supplier agrees to provide high-quality photography services to the Client for the digital platform.<br>
+        2. Services include: [list specific services, e.g., event coverage, product photography, editing]</p>
+        <p><strong>INTELLECTUAL PROPERTY RIGHTS</strong><br>
+        - The Supplier retains copyright to all images.<br>
+        - The Client receives a non-exclusive license to use images for [specific purposes].<br>
+        - The Client agrees to provide credit to the Supplier whenever the images are used or shared.<br>
+        - The Client agrees not to bypass or disable any technological measures implemented to prevent screenshotting or capturing of the content.</p>
+        <p><strong>CONFIDENTIALITY</strong><br>
+        - Each party agrees to keep the other party's confidential information and to use it strictly for the performance of this agreement.</p>
+        <p><strong>LIABILITY AND DAMAGES</strong><br>
+        - The Client shall be liable for any damages or losses incurred due to unauthorized use or screenshotting of the content.<br>
+        - The Client shall immediately cease and desist from using the copyrighted material.</p>
+        <p><strong>WARRANTY</strong><br>
+        - The Supplier warrants that the images are original and free from infringement.</p>
+        <p><strong>By signing below, both parties acknowledge reading, understanding, and agreeing to the terms.</strong></p>
+        <p><strong>Signatures</strong><br>
+        Supplier: ___________________________<br>
+        Client: ___________________________<br>
+        Date: <?php echo  $currentDate; ?></p></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Agree</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+     document.getElementById('agreementCheckbox').addEventListener('change', function() {
+        if (this.checked) {
+            var myModal = new bootstrap.Modal(document.getElementById('agreementModal'));
+            myModal.show();
+        }
+    });
+</script>
 
 
 
