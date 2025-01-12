@@ -111,7 +111,7 @@ if ($emailUploader) {
         $updateStmt->execute();
         $updateStmt->close();
     } else {
-        echo "No appointment data found for the given email_uploader.";
+        
     }
     $appointmentStmt->close();
 
