@@ -81,7 +81,7 @@ if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
   
     <nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand d-none d-md-block logo" href="#">
+        <a class="navbar-brand d-none d-md-block logo" href="../../../../index.php">
             LENSFOLIOHUB
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

@@ -8,6 +8,11 @@
     margin: 0;
 
 }
+
+html.screenshot-blocked, body.screenshot-blocked {
+    background: black !important;
+    color: black !important;
+}
 body{
     background-color: #FAF7F2;
    

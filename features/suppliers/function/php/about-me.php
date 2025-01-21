@@ -51,42 +51,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!empty($currentAboutMeImg)) {
             $filePath = $_SERVER['DOCUMENT_ROOT'] . '/lensfoliohub/assets/img/profile/' . $currentAboutMeImg;
             if (file_exists($filePath)) {
-                unlink($filePath); // Delete the file
+                unlink($filePath); 
             }
         }
 
-        // Upload new profile image
         $fileTmpPath = $_FILES['profile_img']['tmp_name'];
         $fileName = $_FILES['profile_img']['name'];
         $fileNameCmps = explode(".", $fileName);
         $fileExtension = strtolower(end($fileNameCmps));
 
-        // Define allowed file extensions
-        $allowedExts = array('jpg', 'jpeg', 'png');
+        $allowedExts = array(
+            'jpg', 'jpeg', 'png', 'jfif',
+            'gif', 'bmp', 'tiff',        
+            'mp4', 'mkv', 'avi', 'mov',  
+            'flv', 'wmv', 'webm', '3gp',  
+            'mpeg', 'mpg', 'm4v'          
+        );
 
         if (in_array($fileExtension, $allowedExts)) {
-            // Define the absolute path to upload the file
             $uploadFileDir = $_SERVER['DOCUMENT_ROOT'] . '/lensfoliohub/assets/img/profile/';
             
-            // Ensure the directory exists
             if (!is_dir($uploadFileDir)) {
                 mkdir($uploadFileDir, 0777, true);
             }
             
-            // Generate a unique filename to prevent overwriting
             $uniqueName = uniqid('profile_', true) . '.' . $fileExtension;
             $dest_path = $uploadFileDir . $uniqueName;
 
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                $profileImg = $uniqueName; // Store the filename in the database
+                $profileImg = $uniqueName;
 
-                // Update the profile_img in the users table
                 $stmt = $conn->prepare("UPDATE users SET profile_img = ? WHERE email = ?");
                 $stmt->bind_param('ss', $profileImg, $email);
                 $stmt->execute();
                 $stmt->close();
 
-                // Update the profile_image in the about_me table
+
                 $stmt = $conn->prepare("UPDATE about_me SET profile_image = ? WHERE email = ?");
                 $stmt->bind_param('ss', $profileImg, $email);
                 $stmt->execute();

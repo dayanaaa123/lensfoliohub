@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($_POST['verification_code'] == $_SESSION['verification_code']) {
             // Correct code, update the verify_status to 1
             $email = $_POST['email'];
-            $stmt = $conn->prepare("UPDATE users SET verify_status = 1 WHERE email = ?");
+            $stmt = $conn->prepare("UPDATE users SET verify_status = 2 WHERE email = ?");
             $stmt->bind_param("s", $email);
             if ($stmt->execute()) {
                 $_SESSION['message'] = 'Email verified successfully!';

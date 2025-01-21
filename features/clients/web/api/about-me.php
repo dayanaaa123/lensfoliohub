@@ -70,7 +70,7 @@ if ($role != 'guest' && !empty($email)) {
 
     <nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand d-none d-md-block logo" href="#">
+        <a class="navbar-brand d-none d-md-block logo" href="../../../../index.php">
             LENSFOLIOHUB
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -174,7 +174,7 @@ if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
 
 if (!empty($uploaderEmail)) {
 
-    $sql = "SELECT u.name, u.profile_img, a.about_me, a.profession, a.latitude, a.longitude, a.age, a.location_text, a.price
+    $sql = "SELECT u.name, u.profile_img, u.social_link, a.about_me, a.profession, a.latitude, a.longitude, a.age, a.location_text, a.price
             FROM about_me a 
             JOIN users u ON a.email = u.email 
             WHERE a.email = ?";
@@ -199,6 +199,7 @@ if (!empty($uploaderEmail)) {
         $age = $user['age'];
         $location_text = $user['location_text']; 
         $price = $user['price'];
+        $social_link = $user['social_link'];
     } else {
         echo "No data found for this user.";
     }
@@ -267,6 +268,8 @@ $conn->close();
         <h5 class="text-center"><?php echo htmlspecialchars($name); ?></h5>
         <div class="about_mee" style="min-height: 42vh; overflow-y: auto;">
           <p class="text-start context"><?php echo nl2br(htmlspecialchars($about_me)); ?></p>
+            <p class="mb-0">Social Media: </p>
+            <a href="<?php echo htmlspecialchars($social_link); ?>" class="text-start w-75"><?php echo htmlspecialchars($social_link); ?></a>
         </div> 
         <a href="#" class="btn about-me-button">Hire me</a>
         <button class="btn fw-bold" data-bs-toggle="modal" data-bs-target="#reportModal">...</button>
@@ -434,44 +437,7 @@ $conn->close();
       </div>
 
 
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <!-- About Section -->
-                <div class="col-md-4">
-                    <h5>About Photography News</h5>
-                    <p>Stay updated with the latest news, trends, and innovations in the world of photography. Whether you're a professional or an enthusiast, our articles are designed to inspire and inform.</p>
-                </div>
-    
-                <!-- Quick Links -->
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Latest News</a></li>
-                        <li><a href="#">Photography Tips</a></li>
-                        <li><a href="#">Camera Reviews</a></li>
-                    </ul>
-                </div>
-    
-                <!-- Contact Section -->
-                <div class="col-md-4">
-                    <h5>Contact Us</h5>
-                    <p>Email: info@photographynews.com</p>
-                    <p>Phone: +123 456 7890</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <p class="mb-0">&copy; 2024 Photography News. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
+   
 
     <script src="../../function/script/slider-img.js"></script>
     <script src="../../function/script/pre-loadall.js"></script>
