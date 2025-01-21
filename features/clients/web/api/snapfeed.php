@@ -22,14 +22,7 @@ if ($role != 'guest' && !empty($email)) {
 
     $profileImg = '../../../../assets/img/profile/' . $profileImg;
 }
-
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
 ?>
-
-
-
 
 
 
@@ -46,13 +39,43 @@ header("Pragma: no-cache");
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/snapfeed.css">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000000">
-    
 </head>
 
 
 <body>
+
+<div id="black-overlay"></div>
+    <div id="content">
+        <h1>Welcome to SnapFeed</h1>
+        <p>Your content is secure here!</p>
+    </div>
+
+    <script>
+        // Detect screen recording/screenshot
+        const overlay = document.getElementById('black-overlay');
+
+        function blockScreen() {
+            overlay.style.display = 'block'; // Black-out the screen
+        }
+
+        // Screen recording detection (For modern devices)
+        const checkForRecording = () => {
+            const viewport = window.visualViewport;
+            if (viewport.scale < 1) {
+                blockScreen();
+            }
+        };
+
+        // Continuously monitor
+        setInterval(checkForRecording, 1000);
+
+        // iOS-specific screen recording detection
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                blockScreen();
+            }
+        });
+    </script>
     <div id="preloader">
         <div class="line"></div>
         <div class="left"></div>
@@ -211,20 +234,23 @@ header("Pragma: no-cache");
 
 <script type="text/javascript">
 $(document).ready(function () {
+    // Function to copy text to clipboard
     function copyToClipboard() {
         var aux = document.createElement("input");
         aux.setAttribute("value", "LENSFOLIOHUB COPYRIGHT PROTECTION.");
         document.body.appendChild(aux);
-        aux.focus(); 
-        aux.select();
-        document.execCommand("copy"); 
+        aux.focus(); // Focus on the input element
+        aux.select(); // Select the text for copying
+        document.execCommand("copy"); // Copy the text to clipboard
         document.body.removeChild(aux);
         console.log("Text copied to clipboard.");
     }
 
+    // Listen for keyup event globally
     $(document).on('keyup', function (e) {
-        if (e.keyCode === 44) { 
-            e.preventDefault();
+        if (e.keyCode === 44) { // Check if PrintScreen key is pressed
+            e.preventDefault(); // Prevent default PrintScreen behavior (optional)
+            // Copy to clipboard regardless of modal state
             copyToClipboard();
         }
     });
@@ -233,21 +259,6 @@ $(document).ready(function () {
 });
 </script>
 
-<script>
-    document.addEventListener('visibilitychange', function () {
-    if (document.hidden) {
-        document.body.classList.add('screenshot-blocked');
-    } else {
-        document.body.classList.remove('screenshot-blocked');
-    }
-});
-
-window.addEventListener('devicemotion', (event) => {
-    if (event.accelerationIncludingGravity) {
-        document.body.classList.add('screenshot-blocked');
-    }
-});
-</script>
 
 
 
