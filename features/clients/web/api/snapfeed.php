@@ -25,7 +25,6 @@ if ($role != 'guest' && !empty($email)) {
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,43 +38,59 @@ if ($role != 'guest' && !empty($email)) {
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/snapfeed.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
+
+<style>
+   body {
+  -webkit-user-select: none; /* Disable selection on WebKit browsers (e.g., Safari) */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Disable right-click */
+body {
+  -webkit-touch-callout: none; /* Disable right-click on mobile */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+</style>
+
+
 
 
 <body>
+<div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: black; z-index: 9999;"></div>
 
-<div id="black-overlay"></div>
-    <div id="content">
-        <h1>Welcome to SnapFeed</h1>
-        <p>Your content is secure here!</p>
-    </div>
+<script>
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      // Show the overlay when the page is minimized or hidden (possible screenshot attempt)
+      document.getElementById('overlay').style.display = 'block';
+    } else {
+      // Hide the overlay when the page is visible
+      document.getElementById('overlay').style.display = 'none';
+    }
+  });
 
-    <script>
-        // Detect screen recording/screenshot
-        const overlay = document.getElementById('black-overlay');
+  document.addEventListener("visibilitychange", function () {
+  if (document.hidden) {
+    // Your logic to detect when the page is being hidden (suggesting a screenshot might be taken)
+    alert("Please be aware that screenshots are not allowed.");
+  }
+  
+});
+document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+        // Add some behavior to obscure content or alert user
+        alert('Screenshots are not allowed.');
+    }
+});
 
-        function blockScreen() {
-            overlay.style.display = 'block'; // Black-out the screen
-        }
-
-        // Screen recording detection (For modern devices)
-        const checkForRecording = () => {
-            const viewport = window.visualViewport;
-            if (viewport.scale < 1) {
-                blockScreen();
-            }
-        };
-
-        // Continuously monitor
-        setInterval(checkForRecording, 1000);
-
-        // iOS-specific screen recording detection
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                blockScreen();
-            }
-        });
-    </script>
+</script>
     <div id="preloader">
         <div class="line"></div>
         <div class="left"></div>
@@ -258,7 +273,6 @@ $(document).ready(function () {
  
 });
 </script>
-
 
 
 
