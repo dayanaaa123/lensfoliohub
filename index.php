@@ -6,10 +6,8 @@ $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
 $profileImg = ''; 
 
-// Include your database connection file
 include 'db/db.php'; 
 
-// Check if the connection is successful
 if ($conn) {
 
     if ($role != 'guest' && !empty($email)) {
@@ -27,7 +25,6 @@ if ($conn) {
 } else {
 }
 
-// Close the database connection
 $conn->close();
 ?>
 

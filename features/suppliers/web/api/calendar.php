@@ -114,7 +114,7 @@ if ($role != 'guest' && !empty($email)) {
                     <a href="calendar.php"><button class="nav-link calendar highlight">Calendar</button></a>
                 </li>
                 <li class="nav-item">
-                    <a href="contacts.php"><button class="nav-link contacts">Contacts</button></a>
+                    <a href="contacts.php"><button class="nav-link contacts">Message</button></a>
                 </li>
             </ul>
         </div>

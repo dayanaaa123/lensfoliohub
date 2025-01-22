@@ -46,6 +46,8 @@
 
 </head>
 
+
+
 <body>
   
     <nav class="navbar navbar-expand-lg">
@@ -120,37 +122,60 @@
         
 
         <div class="messenger-container">
-    <?php
-    require '../../../../db/db.php';
-    $session_email = $_SESSION['email'];
-    $stmt = $conn->prepare("
-        SELECT email, text 
-        FROM chat 
-        WHERE uploader_email = ? 
-        GROUP BY email 
-        ORDER BY MAX(id) DESC
-    ");
-    $stmt->bind_param("s", $session_email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        <?php
+require '../../../../db/db.php';
+$session_email = $_SESSION['email'];
 
-    // Check if there are any messages
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $email = htmlspecialchars($row['email']);
-            $text = htmlspecialchars($row['text']);
-            echo '
-                <div class="messenger-item" data-email="' . $email . '" onclick="document.getElementById(\'click-email\').value = this.getAttribute(\'data-email\'); console.log(this.getAttribute(\'data-email\')); showMessengerContainer(); loadChat(\'' . $email . '\')">
-                <img src="https://via.placeholder.com/40" alt="User">
+// Modify the query to select the latest message for each email
+$stmt = $conn->prepare("
+    SELECT c.email, c.text
+    FROM chat c
+    INNER JOIN (
+        SELECT email, MAX(id) AS max_id
+        FROM chat
+        WHERE uploader_email = ?
+        GROUP BY email
+    ) latest_chat ON c.id = latest_chat.max_id
+    ORDER BY c.id DESC
+");
+$stmt->bind_param("s", $session_email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Check if there are any messages
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $email = htmlspecialchars($row['email']);
+        $text = htmlspecialchars($row['text']);
+        
+        // Query the 'users' table to get the name and profile image based on the email
+        $userQuery = "SELECT name, profile_img FROM users WHERE email = '$email'";
+        $userResult = $conn->query($userQuery);
+        
+        if ($userResult->num_rows > 0) {
+            // Fetch user data
+            $userRow = $userResult->fetch_assoc();
+            $name = htmlspecialchars($userRow['name']);
+            $profileImage = htmlspecialchars($userRow['profile_img']);
+        } else {
+            // Set default values if user data is not found
+            $name = 'Unknown User';
+            $profileImage = 'default-profile.png';
+        }
+
+        echo '
+            <div class="messenger-item" data-email="' . $email . '" onclick="document.getElementById(\'click-email\').value = this.getAttribute(\'data-email\'); console.log(this.getAttribute(\'data-email\')); showMessengerContainer(); loadChat(\'' . $email . '\')">
+                <img src="../../../../assets/img/profile/' . $profileImage . '" alt="Receiver" class="profile-pic">
                 <div class="details">
-                    <div class="name">' . $email . '</div>
+                    <div class="name">' . $name . '</div>
                     <div class="message">' . $text . '</div>
                 </div>
             </div>';
-        }
-    } else {
-        echo '<p>No messages found.</p>';
     }
+} else {
+    echo '<p>No messages found.</p>';
+}
+    
 
     $stmt->close();
     $conn->close();
@@ -159,84 +184,180 @@
 
 
 
-
 <div class="messenger-containers" style="display: none;">
-    <div class="messenger-containerss" style="height: 50vh; overflow-y: auto;">
+    <div class="messenger-containerss">
+     
         <!-- Messages will be appended here -->
     </div>
     <div class="input-container w-100">
-    <form method="POST" action="../../function/php/submit_chat.php">
-        <input type="hidden" name="email" id="email">
-        <input type="hidden" name="uploader_email" id="uploader_email">
-        <input type="hidden" name="click_email" id="click-email">
-        <div class="d-flex gap-1">
-            <input type="text" name="text" placeholder="Type a message..." required>
-            <button type="submit">Send</button>
-        </div>
-    </form>
+        <form id="chat-form" method="POST">
+            <input type="hidden" name="email" id="email">
+            <input type="hidden" name="click_email" id="click-email">
+            <input type="hidden" id="recipient-email" name="recipient_email" />
+            <div class="d-flex gap-1">
+                <input type="text" name="text" placeholder="Type a message..." required>
+                <button type="submit">Send</button>
+            </div>
+        </form>
+        <div id="status-message"></div> <!-- Status message container -->
     </div>
 </div>
 
-<!-- Input field -->
-
-
-
-            <script>
-               function showMessengerContainer() {
-                    // Hide the initial container
-                    document.querySelector('.messenger-container').style.display = 'none';
-                    
-                    // Show the chat messages container
-                    document.querySelector('.messenger-containers').style.display = 'block';
-                }
-            </script>
-
 <script>
-    function loadChat(email, event) {
-    // Correctly getting the data-email from the clicked element
-    const clickedEmail = event.target.getAttribute('data-email');
-    
-    // Set the click email to the hidden input
-    document.getElementById('click-email').value = clickedEmail;
+   document.getElementById('chat-form').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent form from submitting normally
 
-    const messengerContainers = document.querySelector('.messenger-containerss');
-    messengerContainers.style.display = 'block';
+    var formData = new FormData(this); // Get form data
 
-    // Clear existing messages, keeping the input-container untouched
-    messengerContainers.querySelectorAll('.message').forEach(el => el.remove());
+    var statusMessage = document.getElementById('status-message');
+    statusMessage.innerHTML = ''; // Clear previous messages
 
-    // Fetch chat details using AJAX
-    fetch('../../function/php/fetch_chat.php?email=' + email)
-        .then(response => response.json())
-        .then(data => {
-            if (data.length > 0) {
-                // Create a document fragment to append messages
-                const fragment = document.createDocumentFragment();
-                data.forEach(message => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.classList.add('message', message.type); // Assuming 'received' or 'sent' based on message type
-                    messageDiv.innerHTML = `
-                        <div class="message-text">
-                            ${message.text}
-                        </div>
-                    `;
-                    fragment.appendChild(messageDiv);
-                });
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../../function/php/submit_chat.php', true);
 
-                // Append messages to the container
-                messengerContainers.appendChild(fragment);
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            if (response.error) {
+                // Handle error
+                statusMessage.innerHTML = 'Error: ' + response.error;
             } else {
-                messengerContainers.innerHTML = '<p>No messages found.</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching chat:', error);
-        });
-}
+                // Handle success, dynamically add the message
+                var messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'sent'); // Customize this as needed
 
+                messageDiv.innerHTML = `
+                    <div class="message-text">
+                        ${response.text}
+                    </div>
+                `;
+
+                // Append the message to the chat container
+                document.querySelector('.messenger-containerss').appendChild(messageDiv);
+            }
+        } else {
+            // Handle network or server error
+            statusMessage.innerHTML = 'Error: Could not send message. Please try again.';
+        }
+    };
+
+    xhr.onerror = function () {
+        // Handle network error
+        statusMessage.innerHTML = 'Network error. Please try again.';
+    };
+
+    xhr.send(formData); // Send the form data via AJAX
+});
 
 
 </script>
+
+
+
+<script>
+    function showMessengerContainer() {
+        document.querySelector('.messenger-container').style.display = 'none';
+        document.querySelector('.messenger-containers').style.display = 'block';
+    }
+
+    function goBack() {
+        // Hide the messenger containers
+        document.querySelector('.messenger-containers').style.display = 'none';
+
+        // Show the initial messenger container
+        document.querySelector('.messenger-container').style.display = 'block';
+    }
+
+    function loadChat(email) {
+        document.getElementById('recipient-email').value = email;
+        const messengerContainers = document.querySelector('.messenger-containerss');
+        messengerContainers.style.display = 'block';
+
+        // Clear previous messages
+        messengerContainers.innerHTML = '';
+
+        // Fetch the user's name and profile picture based on the email
+        fetch('../../function/php/fetch_user_name.php?email=' + encodeURIComponent(email))
+            .then(response => response.text()) // We expect plain text now
+            .then(data => {
+                const [userName, profilePicture] = data.split('|'); // Split the response by the delimiter '|'
+                const profileImage = profilePicture || 'https://via.placeholder.com/40'; 
+
+                // Create and add the header (Back button + "Chat with..." text)
+                const headerDiv = document.createElement('div');
+                headerDiv.classList.add('chat-header');
+                headerDiv.innerHTML = `
+                    <button class="back-button" onclick="goBack()"><i class="fa fa-arrow-left fw-bold"></i></button>
+                    <span>Chat with ${userName || email}</span>
+                    <hr>
+                `;
+                messengerContainers.appendChild(headerDiv);
+
+                // Create the wrapper div for messages
+                const messagesWrapperDiv = document.createElement('div');
+                messagesWrapperDiv.classList.add('messagess');
+
+                // Create a div to hold the messages
+                const messagesDiv = document.createElement('div');
+                messagesDiv.classList.add('messages');
+
+                // Append the messages div to the wrapper div
+                messagesWrapperDiv.appendChild(messagesDiv);
+
+                // Append the wrapper div to the messenger container
+                messengerContainers.appendChild(messagesWrapperDiv);
+
+                // Fetch combined and sorted chat messages
+                fetch('../../function/php/fetch_chat_messages.php?email=' + encodeURIComponent(email))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            data.forEach(message => {
+                                const messageDiv = document.createElement('div');
+
+                                // Create the structure for the sent or received message
+                                if (message.type === 'sent') {
+                                    messageDiv.classList.add('message', 'received');
+                                    messageDiv.innerHTML = ` 
+                                        <img src="../../../../assets/img/profile/${profileImage}" alt="Receiver" class="profile-pic">
+                                        <div class="message-text">${message.text}</div>
+                                    `;
+                                } else {
+                                    messageDiv.classList.add('message', 'sent');
+                                    messageDiv.innerHTML = `
+                                        <div class="message-text">${message.text}</div>
+                                    `;
+                                }
+
+                                messagesDiv.appendChild(messageDiv);
+                            });
+                            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to bottom
+                        } else {
+                            messagesDiv.innerHTML = '<p>No messages found.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading chat messages:', error);
+                        messagesDiv.innerHTML = '<p>Error loading messages. Please try again.</p>';
+                    });
+            })
+            .catch(error => {
+                console.error('Error fetching user name:', error);
+                const headerDiv = document.createElement('div');
+                headerDiv.classList.add('chat-header');
+                headerDiv.innerHTML = `
+                    <button class="back-button" onclick="goBack()"><i class="fa fa-arrow-left fw-bold"></i></button>
+                    <span>Chat with ${email}</span>
+                    <hr>
+                `;
+                messengerContainers.appendChild(headerDiv);
+            });
+    }
+</script>
+
+
 
 
 

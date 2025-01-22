@@ -1,4 +1,4 @@
-@
+
 
 *{
       font-family: Arial, sans-serif;
@@ -413,6 +413,10 @@ body.loaded #preloader {
     color: #999;
 }
 
+.messagess{
+    height: 50vh !important;
+    overflow-y: auto !important;
+}
 .carousel-img {
     display: none; /* Hide all images initially */
     width: 30%;
@@ -738,3 +742,13 @@ footer p{
         border-radius: 20px;
     }
   /*Contacts End*/
+
+  /*Chat */
+
+  .back-button{
+    background-color: transparent;
+    border: none;
+    margin: 0 40px 0 0;
+    font-size: 20px;
+    padding: 2px;
+  }

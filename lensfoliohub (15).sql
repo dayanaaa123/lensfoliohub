@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 12, 2025 at 05:02 AM
+-- Generation Time: Jan 22, 2025 at 07:36 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.1.25
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -53,9 +53,13 @@ INSERT INTO `about_me` (`id`, `profile_image`, `name`, `profession`, `about_me`,
 (2, '../../../../assets/img/profile/gallery-6.jpg', NULL, 'photographer,videographer', 'dasasdsa', 12, 14.2838325, 120.8668772, '2024-09-17 08:37:24', '', NULL, 'grid', 0.00, NULL),
 (3, 'default_image.jpg', NULL, 'photographer', 'hello real', 13, 14.2813281, 120.8703823, '2024-09-17 08:40:36', '1@gmail.com', 'Trece Martires City Hall, Governor\'s Drive, Trece Martires, Cavite, Philippines', 'carousel', 0.00, NULL),
 (4, 'default_image.jpg', NULL, 'photographer,videographer', 'Hey Please hire me, I\'m good heheHey Please hire me, I\'m good heheHey Please hire me, I\'m good heheHey Please hire me, I\'m good heheHey Please hire me, I\'m good heheHey Please hire me, I\'m good heheHey Please hire me, I\'m good heheHey Please hire me, I\'m good heheHey Please hire me, I\'m good hehe', 12, 14.2838325, 120.8668772, '2024-09-26 20:22:51', 'test@gmail.com', '', 'carousel', 10.00, NULL),
-(7, '', 'SUPPLIER 1', '', 'Hello, I am Supplier1!\r\nA photographer who loves to capture every moment, because photography is not just an images, it also holds memories you never want to forget. Photography also is an art that can captivates someone\'s heart and I am here to offer you a shots you never want to missed!', 22, 0, 0, '2025-01-10 05:53:19', 'supplier1@gmail.com', '', 'grid', 0.00, NULL),
-(8, 'profile_6783310b167724.64657887.png', 'SUPPLIER2', 'photographer', 'Welcome! My name is Supplier2 and I am a professional photographer specializing in portrait, landscape, and creative photography. I am offering a high-quality and eye-catching images for four years now and I am dreaming of offering it for a lifetime. And in this lifetime, it is an honor for me to be the one to capture yours!', 20, 14.2990183, 120.9589699, '2025-01-10 06:18:15', 'supplier2@gmail.com', '', 'grid', 1000.00, '0,14'),
-(9, '', 'SUPPLIER1', '', 'Hello, I am Supplier1!\r\nA photographer who loves to capture every moment, because photography is not just an images, it also holds memories you never want to forget. Photography also is an art that can captivates someone\'s heart and I am here to offer you a shots you never want to missed!', 25, 0, 0, '2025-01-10 07:24:04', 'supplier3@gmail.com', 'Tanza, Cavite, Philippines', 'grid', 0.00, NULL);
+(7, '', 'SUPPLIER 1', '', 'Hello, I am Supplier1!\r\nA photographer who loves to capture every moment, because photography is not just an images, it also holds memories you never want to forget. Photography also is an art that can captivates someone\'s heart and I am here to offer you a shots you never want to missed!', 22, 0, 0, '2025-01-10 05:53:19', 'supplier1@gmail.com', '', 'grid', 0.00, ',0'),
+(8, 'profile_678f638f3099e9.95649224.jpg', 'SUPPLIER2', 'photographer', 'Welcome! My name is Supplier2 and I am a professional photographer specializing in portrait, landscape, and creative photography. I am offering a high-quality and eye-catching images for four years now and I am dreaming of offering it for a lifetime. And in this lifetime, it is an honor for me to be the one to capture yours!', 20, 14.2990183, 120.9589699, '2025-01-10 06:18:15', 'supplier2@gmail.com', '', 'grid', 1000.00, '0,14'),
+(9, '', 'SUPPLIER1', '', 'Hello, I am Supplier1!\r\nA photographer who loves to capture every moment, because photography is not just an images, it also holds memories you never want to forget. Photography also is an art that can captivates someone\'s heart and I am here to offer you a shots you never want to missed!', 25, 0, 0, '2025-01-10 07:24:04', 'supplier3@gmail.com', 'Tanza, Cavite, Philippines', 'grid', 0.00, NULL),
+(10, '', 'ron carlo lorenzo tapao', 'photographer', '', 0, 14.384383026670973, 120.82933046455689, '2025-01-13 13:04:36', 'tapaocholo390@gmail.com', 'Amaya I, Tanza, Cavite, Philippines', 'grid', 0.00, NULL),
+(11, 'profile_678653e1bdfd51.03915066.png', 'dahhyunnee', 'photographer', 'TEST 1', 21, 14.4028641, 120.9413813, '2025-01-14 11:48:12', 'cmalicdon14@gmail.com', '', 'grid', 1000.00, '0,8,9'),
+(12, '', '', 'photographer', '', 22, 0, 0, '2025-01-14 12:00:34', 'moodvibes683@gmail.com', '', 'grid', 5000.00, NULL),
+(13, 'profile_6786536dc61ff8.28672114.jpg', 'erich blu', 'photographer', 'A Brilliant Photographer so hire me now', 22, 14.372367969173, 120.81684043149, '2025-01-14 12:06:01', 'rckbrnl22@gmail.com', '', 'grid', 0.00, '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23');
 
 -- --------------------------------------------------------
 
@@ -82,7 +86,10 @@ CREATE TABLE `appointment` (
 --
 
 INSERT INTO `appointment` (`id`, `name`, `latitude`, `longitude`, `event`, `time`, `selected_date`, `email_uploader`, `email`, `status`, `cancel_reason`) VALUES
-(21, 'TEST TEST TEST FOR EMAIL SUPPLIER 3', 14.283833, 120.866877, 'photography', '0', '2025-01-03', 'supplier2@gmail.com', 'client@gmail.com', 'Pending', NULL);
+(21, 'TEST TEST TEST FOR EMAIL SUPPLIER 3', 14.283833, 120.866877, 'photography', '0', '2025-01-03', 'supplier2@gmail.com', 'client@gmail.com', 'Cancelled', 'no'),
+(22, 'Ivan ablanida', 14.283833, 120.866877, 'photography', '0', '2025-01-03', 'supplier2@gmail.com', 'client@gmail.com', 'Cancelled', 'no'),
+(23, 'diana', 14.342933, 120.850314, 'photography', '0', '2025-01-14', 'supplier1@gmail.com', 'bucodancollet@gmail.com', 'Completed', NULL),
+(24, 'Diana', 14.342933, 120.850314, 'photography', '9', '0000-00-00', 'cmalicdon14@gmail.com', 'client@gmail.com', 'Completed', NULL);
 
 -- --------------------------------------------------------
 
@@ -105,21 +112,11 @@ CREATE TABLE `chat` (
 --
 
 INSERT INTO `chat` (`id`, `email`, `uploader_email`, `text`, `role`, `created_at`, `click_email`) VALUES
-(1, 'client@gmail.com', 'supplier@gmail.com', 'dasdas', '', '2025-01-08 17:09:37', ''),
-(2, 'client@gmail.com', 'supplier@gmail.com', 'hey', '', '2025-01-08 17:13:12', ''),
-(3, 'test1@gmail.com', 'supplier@gmail.com', 'test1', 'customer', '2025-01-08 17:13:54', ''),
-(4, 'client@gmail.com', 'supplier@gmail.com', 'Hi hello.', 'customer', '2025-01-08 17:25:26', ''),
-(5, 'client@gmail.com', 'supplier@gmail.com', 'dsadas', 'customer', '2025-01-08 17:25:52', ''),
-(7, 'supplier@gmail.com', 'test@gmail.com', 'eom', 'supplier', '2025-01-08 18:21:25', ''),
-(8, 'supplier@gmail.com', 'test@gmail.com', 'hey', 'supplier', '2025-01-08 20:01:31', ''),
-(9, 'supplier@gmail.com', 'test@gmail.com', 'hey', 'supplier', '2025-01-08 20:21:04', ''),
-(10, 'supplier@gmail.com', 'test@gmail.com', 'hey', 'supplier', '2025-01-08 20:25:06', ''),
-(11, 'supplier@gmail.com', 'test@gmail.com', 'dsadsadsa', 'supplier', '2025-01-08 20:25:32', ''),
-(12, 'supplier@gmail.com', 'test@gmail.com', '12', 'supplier', '2025-01-08 20:36:58', ''),
-(13, 'supplier@gmail.com', 'test@gmail.com', 'a', 'supplier', '2025-01-08 20:38:17', ''),
-(14, 'supplier@gmail.com', 'test@gmail.com', 'a', 'supplier', '2025-01-08 20:41:01', ''),
-(15, 'supplier@gmail.com', 'test@gmail.com', 'a', 'supplier', '2025-01-08 20:41:19', ''),
-(16, 'supplier@gmail.com', 'test@gmail.com', 'a', 'supplier', '2025-01-08 20:41:48', '');
+(72, 'client@gmail.com', 'supplier2@gmail.com', 'dsa', 'customer', '2025-01-22 06:24:27', ''),
+(73, 'supplier2@gmail.com', 'client@gmail.com', 'hey', 'supplier', '2025-01-22 06:25:02', ''),
+(74, 'client@gmail.com', 'supplier2@gmail.com', 'hey', 'customer', '2025-01-22 06:32:47', ''),
+(75, 'client@gmail.com', 'supplier2@gmail.com', 'hello bro!', 'customer', '2025-01-22 06:34:29', ''),
+(76, 'client@gmail.com', 'cmalicdon14@gmail.com', 'hey', 'customer', '2025-01-22 06:34:52', '');
 
 -- --------------------------------------------------------
 
@@ -145,7 +142,11 @@ INSERT INTO `comments` (`id`, `card_img`, `email`, `comments`, `created_at`, `se
 (5, 'u9.jpg', 'supplier2@gmail.com', 'we', '2025-01-10 09:09:30', 'client@gmail.com'),
 (6, 'u9.jpg', 'supplier2@gmail.com', 'wow', '2025-01-10 14:24:21', 'supplier1@gmail.com'),
 (7, 'u9.jpg', 'supplier2@gmail.com', 'dasdasdas', '2025-01-11 22:07:20', 'supplier1@gmail.com'),
-(8, 'u9.jpg', 'supplier2@gmail.com', 'hey', '2025-01-11 22:08:32', 'client@gmail.com');
+(8, 'u9.jpg', 'supplier2@gmail.com', 'hey', '2025-01-11 22:08:32', 'client@gmail.com'),
+(9, 'Rectangle 53.png', 'supplier1@gmail.com', 'wow', '2025-01-11 17:18:40', 'supplier1@gmail.com'),
+(10, '472521528_452993697876142_6017095496710765049_n.jpg', 'supplier3@gmail.com', 'wow', '2025-01-13 10:39:40', 'supplier1@gmail.com'),
+(11, '472521528_452993697876142_6017095496710765049_n.jpg', 'supplier3@gmail.com', 'wow', '2025-01-14 03:47:00', 'supplier1@gmail.com'),
+(12, '456425821_374542075693538_738090013815818665_n.jpg', 'rckbrnl22@gmail.com', 'wow so gorgeous', '2025-01-14 12:12:25', 'rckbrnl22@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -220,7 +221,16 @@ INSERT INTO `notification` (`id`, `email`, `email_uploader`, `message`, `status`
 (34, 'client@gmail.com', 'supplier2@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-12 03:47:01'),
 (35, 'client@gmail.com', 'supplier2@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-12 03:49:34'),
 (36, 'client@gmail.com', 'supplier2@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-12 03:49:53'),
-(37, 'client@gmail.com', 'supplier2@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-12 03:52:26');
+(37, 'client@gmail.com', 'supplier2@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-12 03:52:26'),
+(38, 'client@gmail.com', 'supplier2@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-11 17:11:25'),
+(39, 'client@gmail.com', 'supplier2@gmail.com', 'Appointment has been cancelled.', 'cancelled', '2025-01-11 17:22:17'),
+(40, 'client@gmail.com', 'supplier2@gmail.com', 'Appointment has been cancelled.', 'cancelled', '2025-01-11 17:22:25'),
+(41, 'bucodancollet@gmail.com', 'supplier1@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-14 03:52:09'),
+(42, 'bucodancollet@gmail.com', 'supplier1@gmail.com', 'Your appointment has been accepted.', 'Accepted', '2025-01-14 03:53:31'),
+(43, 'bucodancollet@gmail.com', 'supplier1@gmail.com', 'Your appointment has been completed.', 'completed', '2025-01-14 03:53:51'),
+(44, 'client@gmail.com', 'cmalicdon14@gmail.com', 'Your appointment is pending approval.', 'pending', '2025-01-14 12:06:13'),
+(45, 'client@gmail.com', 'cmalicdon14@gmail.com', 'Your appointment has been accepted.', 'Accepted', '2025-01-14 12:07:05'),
+(46, 'client@gmail.com', 'cmalicdon14@gmail.com', 'Your appointment has been completed.', 'completed', '2025-01-14 12:07:19');
 
 -- --------------------------------------------------------
 
@@ -246,7 +256,8 @@ INSERT INTO `ratings` (`id`, `user_email`, `supplier_email`, `rating`, `review`,
 (16, 'client@gmail.com', 'supplier1@gmail.com', 5, 'dasdasdsa', '2025-01-10 03:55:24', 'Supplier 1'),
 (17, 'client@gmail.com', 'supplier@gmail.com', 4, 'satisfied\r\n', '2025-01-10 06:14:32', 'Supplier2'),
 (18, 'client@gmail.com', 'supplier2@gmail.com', 5, 'nice', '2025-01-10 09:08:37', 'client'),
-(19, 'client@gmail.com', 'supplier@gmail.com', 5, 'satisfied\r\n', '2025-01-10 06:14:32', 'Supplier2');
+(19, 'client@gmail.com', 'supplier@gmail.com', 5, 'satisfied\r\n', '2025-01-10 06:14:32', 'Supplier2'),
+(20, 'bucodancollet@gmail.com', 'supplier1@gmail.com', 5, 'nice\r\n', '2025-01-14 03:54:12', 'Ancollet Bucod');
 
 -- --------------------------------------------------------
 
@@ -324,9 +335,13 @@ INSERT INTO `snapfeed` (`id`, `card_img`, `card_text`, `created_at`, `img_title`
 (43, 'u6.jpg', 'Hello HI', '2025-01-10 20:44:38', 'Diana', 'supplier2@gmail.com', -1, NULL),
 (44, 'u7.jpg', 'Hello HI', '2025-01-10 20:44:38', 'Diana', 'supplier2@gmail.com', 1, NULL),
 (45, 'u8.jpg', 'Hello HI', '2025-01-10 20:44:38', 'Diana', 'supplier2@gmail.com', 0, NULL),
-(46, 'u9.jpg', 'Hello HI', '2025-01-10 20:44:38', 'Diana', 'supplier2@gmail.com', 3, NULL),
+(46, 'u9.jpg', 'Hello HI', '2025-01-10 20:44:38', 'Diana', 'supplier2@gmail.com', 4, NULL),
 (51, '472521528_452993697876142_6017095496710765049_n.jpg', 'portrait', '2025-01-10 07:27:41', 'ARAYAT', 'supplier3@gmail.com', 3, NULL),
-(52, 'Rectangle 53.png', 'tesst tet teste tets', '2025-01-11 23:32:15', 'test', 'supplier1@gmail.com', 0, NULL);
+(52, 'Rectangle 53.png', 'tesst tet teste tets', '2025-01-11 23:32:15', 'test', 'supplier1@gmail.com', 0, NULL),
+(54, 'DSC08181.JPG', 'フレンドリー', '2025-01-13 13:14:04', 'PORTRAIT', 'tapaocholo390@gmail.com', 0, NULL),
+(55, 'DSC_0096.jpg', 'ANONG GENTLE GENTLE?', '2025-01-14 11:58:32', 'imus-plaza.jpg', 'cmalicdon14@gmail.com', 0, NULL),
+(56, '456425821_374542075693538_738090013815818665_n.jpg', 'just look at her', '2025-01-14 12:10:11', 'My HD photo', 'rckbrnl22@gmail.com', 0, NULL),
+(57, '473670359_922109386677226_1686913724325748102_n.jpg', 'ganito pala sa maynila maingay,mausok, at puno ng pangarap', '2025-01-14 12:24:50', 'Manila nights', 'rckbrnl22@gmail.com', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -398,7 +413,7 @@ CREATE TABLE `users` (
   `disable_status` tinyint(4) NOT NULL DEFAULT 1,
   `address` varchar(255) NOT NULL,
   `birthday` date DEFAULT NULL,
-  `social_link` varchar(255) NOT NULL,
+  `social_link` varchar(255) DEFAULT NULL,
   `years_in_profession` int(11) DEFAULT NULL,
   `username` varchar(255) NOT NULL,
   `test_password` varchar(255) NOT NULL,
@@ -411,11 +426,22 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role`, `name`, `email`, `password`, `created_at`, `updated_at`, `profile_img`, `about_me`, `profession`, `location`, `age`, `day_available`, `is_active`, `last_login`, `disable_status`, `address`, `birthday`, `social_link`, `years_in_profession`, `username`, `test_password`, `verification_code`, `verify_status`) VALUES
-(26, 'admin', 'admin', 'admin@gmail.com', '$2y$10$opUH24g9VfMnpi1qYe634u2OSYi7auE9AP2kFb1maZVZrx8ex5gMy', '2024-11-30 21:26:12', '2025-01-11 23:00:14', 'profile.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-11 23:00:14', 1, '', NULL, '', NULL, '', '', NULL, 0),
-(46, 'supplier', 'Supplier1', 'supplier1@gmail.com', '$2y$10$BnhaCY2V29URzceO2M3Sve6JMUcTVYX893N5trZR7KjYKV2bE3IQ2', '2025-01-10 20:43:11', '2025-01-11 23:58:13', 'profile_6780c4f7d44c86.65992713.jpg', NULL, 'videographer', NULL, NULL, '', 1, '2025-01-11 23:58:13', 1, 'blk 4 lot 23', '2025-01-10', 'https://www.facebook.com', 2024, '', '', NULL, 0),
-(50, 'customer', 'client', 'client@gmail.com', '$2y$10$Uqg3zDXUZPwc66eQEvzQX.zZthau4I71krUY7m4upP2S0plXGHai6', '2025-01-10 21:06:38', '2025-01-12 02:45:47', 'profile_6780cf10964bd9.61209597.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-12 02:45:47', 1, 'blk 4 lot 23', '2025-01-15', 'https://www.facebook.com/', NULL, '', '', NULL, 0),
-(51, 'supplier', 'SUPPLIER2', 'supplier2@gmail.com', '$2y$10$TETEDH4Y7wsPqvINufFNEec9BUuWWaH/QVKKa7EkxmfMsaUR0YwAm', '2025-01-10 06:22:58', '2025-01-12 03:03:39', 'profile_6783310b167724.64657887.png', NULL, 'photographer', NULL, NULL, ',2025-01-01,2025-01-02,2025-01-03', 1, '2025-01-12 03:03:39', 1, 'tanza', '2002-07-05', 'https://www.facebook.com/collet.kulet', 2, '', '', NULL, 0),
-(87, 'supplier', 'Ivan ablanida', 'ejivancablanida@gmail.com', '$2y$10$dRdsDSNXntUf4QIkwqnw3.xO2idROztevWUVH3Orl4kJH5ktT7BoO', '2025-01-12 02:34:57', '2025-01-12 02:37:41', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-12 02:37:41', 1, 'Blk 4 Lot 23', '2025-01-11', 'https://www.facebook.com/', 23, '', '', '9252', 1);
+(26, 'admin', 'admin', 'admin@gmail.com', '$2y$10$opUH24g9VfMnpi1qYe634u2OSYi7auE9AP2kFb1maZVZrx8ex5gMy', '2024-11-30 21:26:12', '2025-01-21 09:26:23', 'profile.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-21 09:26:23', 1, '', NULL, '', NULL, '', '', NULL, 1),
+(46, 'supplier', 'Supplier1', 'supplier1@gmail.com', '$2y$10$TETEDH4Y7wsPqvINufFNEec9BUuWWaH/QVKKa7EkxmfMsaUR0YwAm', '2025-01-10 20:43:11', '2025-01-21 16:09:28', 'profile_6780c4f7d44c86.65992713.jpg', NULL, 'videographer', NULL, NULL, ',2025-01-14', 1, '2025-01-21 16:09:28', 1, 'blk 4 lot 23', '2025-01-10', 'https://www.facebook.com', 2024, '', '', NULL, 1),
+(50, 'customer', 'client', 'client@gmail.com', '$2y$10$Uqg3zDXUZPwc66eQEvzQX.zZthau4I71krUY7m4upP2S0plXGHai6', '2025-01-10 21:06:38', '2025-01-22 03:17:10', 'profile_6780cf10964bd9.61209597.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-22 03:17:10', 1, 'blk 4 lot 23', '2025-01-15', 'https://www.facebook.com/', NULL, '', '', NULL, 1),
+(51, 'supplier', 'SUPPLIER2', 'supplier2@gmail.com', '$2y$10$TETEDH4Y7wsPqvINufFNEec9BUuWWaH/QVKKa7EkxmfMsaUR0YwAm', '2025-01-10 06:22:58', '2025-01-22 03:04:30', 'profile_678f638f3099e9.95649224.jpg', NULL, 'photographer', NULL, NULL, ',2025-01-01,2025-01-02,2025-01-03', 1, '2025-01-22 03:04:30', 1, 'tanza', '2002-07-05', 'https://www.facebook.com/collet.kulet', 2, '', '', NULL, 1),
+(91, 'supplier', 'Diana', 'bustamantedianamaea@cvsu.edu.ph', '$2y$10$5f3N06R6H7UO9rmIVaLZ/.Q0O.QnBQxvnSrMfN0NMPE5zjOmE4sam', '2025-01-11 17:51:46', '2025-01-11 17:51:46', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-11 17:51:46', 1, 'tanza', '2003-05-07', 'https://m.facebook.com/dianamae.bustamante.3?', 2, '', '', '5793', 0),
+(94, 'customer', 'Ancollet Bucod', 'bucodancollet@gmail.com', '$2y$10$mMnLsV1faoFNbL28QBH78u2EJ1reLYTWBx5d.eBvbG6eZNvCq346G', '2025-01-13 11:51:50', '2025-01-15 10:44:58', 'profile.png', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-15 10:44:58', 1, 'tanza', '2001-06-30', NULL, NULL, '', '', '1326', 1),
+(95, 'supplier', 'collet', 'nacoomercadejas@gmail.com', '$2y$10$yVjznHKKmorgpoMMZLV7Z.jZuYTtNgwwywjWtvIAqYye/M/kbaJbS', '2025-01-13 12:37:32', '2025-01-13 14:40:34', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 1, '2025-01-13 14:40:34', 1, 'tanza', '2003-03-06', 'https://www.facebook.com/collet.kulet', 4, '', '', '1301', 1),
+(96, 'supplier', 'ron carlo lorenzo tapao', 'tapaocholo390@gmail.com', '$2y$10$Q7xVBXA57RoVwhDXiktkueEaAOCpvm6b1PXkAZNz3uwqqRGulZ5bG', '2025-01-13 13:02:25', '2025-01-13 13:03:49', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-13 13:03:49', 1, 'amaya 4 tanza cavite', '2005-12-23', 'https://www.instagram.com/rontapao/', 3, '', '', '8639', 1),
+(97, 'supplier', 'Ryan Kenneth Berjeno ', 'rkberjeno@gmail.com', '$2y$10$wwI2Ryy1MUj.k7Y2e/faRetgTPPYclf6gKN/03RAzV2dp9bZYTDTS', '2025-01-14 08:27:33', '2025-01-14 09:00:26', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 09:00:26', 1, 'Belvedere Tanza, Cavite ', '2002-09-22', 'https://www.facebook.com/Kaye.Berjeno?mibextid=ZbWKwL', 4, '', '', '4029', 1),
+(98, 'customer', 'Alvin', 'amacatoalvin@gmail.com', '$2y$10$/HvtcgSJBtfh50k3j0oFzegXHJHOTjsEVtjaa8MfU8gGdcfHlL1tC', '2025-01-14 09:00:59', '2025-01-14 09:00:59', 'profile.png', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-14 09:00:59', 1, 'Talahiban 1st San Juan Batangas', '1974-11-07', NULL, NULL, '', '', '5059', 0),
+(99, 'supplier', 'Mox', 'mojoshots1@gmail.com', '$2y$10$yX.BADanJGpyUKN4bREf.uNiK1VwodBzypqLSs5S4AwljNgPE1b7y', '2025-01-14 10:59:19', '2025-01-14 11:00:04', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 11:00:04', 1, 'General trias cavite san juan 1', '2004-06-22', 'https://www.instagram.com/moxtorres_?igsh=emtrYWtsMW81OWo3', 2, '', '', '5775', 1),
+(100, 'supplier', 'Naziela', 'mihoqtt14@gmail.com', '$2y$10$rTXmeACB2R/WKom82J7iteVMOswbfRa0pJkHXGev3L0TDjLQ0C2Mi', '2025-01-14 11:32:40', '2025-01-14 11:32:40', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 11:32:40', 1, '134 Anabu 1-A Imus City Cavite', '2002-04-17', 'https://www.facebook.com/clinton.malicdon.2024/', 3, '', '', '7102', 0),
+(101, 'supplier', 'dahhyunnee', 'cmalicdon14@gmail.com', '$2y$10$4fEJnU9SJUM3R0LZMJdrBuvRXpHzTka43qu2kN7ran577fcb4TysG', '2025-01-14 11:34:16', '2025-01-14 12:09:05', 'profile_678653e1bdfd51.03915066.png', NULL, 'photographer', NULL, NULL, ',2025-01-14', 0, '2025-01-14 12:09:05', 1, '134 Anabu 1-A Imus City Cavite', '2002-04-17', 'https://www.facebook.com/clinton.malicdon.2024/', 3, '', '', '5667', 1),
+(102, 'supplier', 'Gello Tim', 'moodvibes683@gmail.com', '$2y$10$SLxAhpuGTv9EHL/g6UIuZ.bXUZ3oXk..Y5rQC9QfRJbyyA9pqd5ti', '2025-01-14 11:58:51', '2025-01-14 11:59:47', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 11:59:47', 1, 'Amaya 2 Tanza, Cavite', '2002-03-17', 'https://www.facebook.com/gelo.timcang.7?mibextid=ZbWKwL', 1, '', '', '2503', 1),
+(103, 'supplier', 'erich blu', 'rckbrnl22@gmail.com', '$2y$10$pcWlgLDBBWGe6URVyXhvDe9oDRe0VoWebkMOwi2CiwtfJtwyx9G1S', '2025-01-14 12:02:36', '2025-01-14 12:21:17', 'profile_6786536dc61ff8.28672114.jpg', NULL, 'photographer', NULL, NULL, ',2025-01-01,2025-01-02,2025-01-03,2025-01-04,2025-01-11,2025-01-09,2025-01-10,2025-02-03,2025-02-02,2025-02-08,2025-01-17,2025-02-06', 0, '2025-01-14 12:21:17', 1, 'tanza', '2002-02-08', 'https://www.facebook.com/collet.kulet', 3, '', '', '6290', 1),
+(104, 'supplier', 'ivan', 'supplierej@gmail.com', '$2y$10$kTBfb/IQ4g/f5en8EtQN5.A2hCECBnGIgVRtlHk9Qdpr5/UUPNBY6', '2025-01-21 16:09:00', '2025-01-21 16:09:20', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-21 16:09:20', 1, 'dasdsadsa', '2025-02-08', 'https://www.facebook.com/', 23, '', '', '3566', 1);
 
 -- --------------------------------------------------------
 
@@ -438,7 +464,8 @@ INSERT INTO `user_hearts` (`id`, `email`, `card_img`, `created_at`) VALUES
 (9, 'user@example.com', 'image1.jpg', '2025-01-11 22:39:07'),
 (13, 'client@gmail.com', 'u8.jpg', '2025-01-11 22:44:57'),
 (23, 'client@gmail.com', 'u7.jpg', '2025-01-11 22:58:50'),
-(25, 'client@gmail.com', 'u4.jpg', '2025-01-12 02:48:13');
+(25, 'client@gmail.com', 'u4.jpg', '2025-01-12 02:48:13'),
+(26, 'bucodancollet@gmail.com', 'u9.jpg', '2025-01-14 04:10:13');
 
 --
 -- Indexes for dumped tables
@@ -538,25 +565,25 @@ ALTER TABLE `user_hearts`
 -- AUTO_INCREMENT for table `about_me`
 --
 ALTER TABLE `about_me`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `chat`
 --
 ALTER TABLE `chat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `news`
@@ -568,13 +595,13 @@ ALTER TABLE `news`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `ratings`
 --
 ALTER TABLE `ratings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `recovery_requests`
@@ -592,7 +619,7 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `snapfeed`
 --
 ALTER TABLE `snapfeed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `sub_news`
@@ -610,13 +637,13 @@ ALTER TABLE `template1`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT for table `user_hearts`
 --
 ALTER TABLE `user_hearts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

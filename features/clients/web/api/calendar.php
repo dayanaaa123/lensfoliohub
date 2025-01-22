@@ -205,18 +205,18 @@ if ($emailUploader) {
 
     <section class="supplier-profile">
         <div class="container mt-5">
-            <ul class="nav justify-content-center">
+        <ul class="nav justify-content-center">
                 <li class="nav-item">
                     <a href="about-me.php"><button class="nav-link about-me">About Me</button></a>
                 </li>
                 <li class="nav-item">
-                    <a href="projects.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link">Projects</button></a>
+                    <a href="projects.php"><button class="nav-link ">Projects</button></a>
                 </li>
                 <li class="nav-item">
-                    <a href="calendar.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link calendar">Calendar</button></a>
+                    <a href="calendar.php"><button class="nav-link calendar highlight">Calendar</button></a>
                 </li>
                 <li class="nav-item">
-                    <a href="contacts.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link contacts">Contacts</button></a>
+                    <a href="contacts.php"><button class="nav-link contacts">Contacts</button></a>
                 </li>
             </ul>
         </div>

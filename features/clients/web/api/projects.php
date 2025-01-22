@@ -132,7 +132,7 @@ if ($role != 'guest' && !empty($email)) {
                     <a href="about-me.php"><button class="nav-link about-me">About Me</button></a>
                 </li>
                 <li class="nav-item">
-                    <a href="projects.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link">Projects</button></a>
+                    <a href="projects.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link highlight">Projects</button></a>
                 </li>
                 <li class="nav-item">
                     <a href="calendar.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link calendar">Calendar</button></a>

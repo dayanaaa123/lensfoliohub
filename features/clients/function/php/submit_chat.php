@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Check if required fields are not empty
-    if (!empty($uploader_email) && !empty($text) && !empty($click_email)) {
         // SQL query to insert the chat message
         $sql = "INSERT INTO chat (email, uploader_email, text, role, click_email) 
                 VALUES ('$email', '$uploader_email', '$text', '$role', '$click_email')";
@@ -47,10 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             die("Insert failed: " . $conn->error);
         }
-    } else {
-        die("All fields are required.");
-    }
-}
+    } 
+
 
 // Close the connection
 $conn->close();

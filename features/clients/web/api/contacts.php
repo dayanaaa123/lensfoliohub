@@ -143,43 +143,127 @@ if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
                     <a href="calendar.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link calendar">Calendar</button></a>
                 </li>
                 <li class="nav-item">
-                    <a href="contacts.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link contacts">Contacts</button></a>
+                    <a href="contacts.php?email_uploader=<?php echo urlencode($uploaderEmail); ?>"><button class="nav-link contacts highlight">Contacts</button></a>
                 </li>
             </ul>
         </div>
 
         <div class="messenger-container">
-        <!-- Conversation area -->
-        <div class="message received">
-            <img src="https://via.placeholder.com/40" alt="Supplier" class="profile-pic">
-            <div class="message-text">
-                Hey, how are you doing?
-            </div>
-        </div>
-        <div class="message sent">
-            <div class="message-text">
-                I'm good, thanks! How about you?
-            </div>
-        </div>
-        <div class="message received">
-            <img src="https://via.placeholder.com/40" alt="Supplier" class="profile-pic">
-            <div class="message-text">
-                I'm great too, thanks for asking.
-            </div>
-        </div>
+    <!-- Conversation area -->
+    <div class="messenger-containerss" style="height: 70vh; overflow-y: auto;"></div>
 
-    <!-- Input field -->
-        <div class="input-container w-100">
-            <form method="POST" action="../../function/php/submit_chat.php">
-                <input type="hidden" name="email" id="email">
-                <input type="hidden" name="uploader_email" id="uploader_email">
-                <div class="d-flex gap-1" >
-                    <input type="text" name="text" placeholder="Type a message..." required>
-                    <button type="submit">Send</button>
-                </div>
-            </form>
-        </div>
-        </div>
+    <!-- Input field for sending a message -->
+    <div class="input-container w-100">
+        <form method="POST" action="../../function/php/submit_chat.php">
+            <input type="hidden" name="email" id="email">
+            <input type="hidden" name="uploader_email" id="uploader_email">
+            <div class="d-flex gap-1">
+                <input type="text" name="text" placeholder="Type a message..." required>
+                <button type="submit">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function loadChat(recipientEmail, uploaderEmail) {
+    // Set recipient email from function argument
+    document.getElementById('email').value = recipientEmail;
+    document.getElementById('uploader_email').value = uploaderEmail;
+
+    console.log('Recipient Email:', recipientEmail); // Debugging the recipient email
+    console.log('Uploader Email:', uploaderEmail);   // Debugging the uploader email
+
+    const messengerContainers = document.querySelector('.messenger-containerss');
+    messengerContainers.innerHTML = ''; // Clear previous messages
+
+    // Send the request using POST method instead of GET
+    const formData = new FormData();
+    formData.append('uploader_email', uploaderEmail); // Add uploader_email to the FormData
+
+    fetch('../../function/php/fetch_chat_messages.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Chat Data:', data);  // Debugging chat data response
+        
+        // If there are messages
+        if (data.length > 0) {
+            data.forEach(message => {
+                const messageDiv = document.createElement('div');
+                
+                // Reverse the class for sent and received messages
+                if (message.type === 'sent') {
+                    // Sent message will now have 'sent' class (aligned to the right)
+                    messageDiv.classList.add('message', 'received');  
+                    messageDiv.innerHTML = `
+                        <div class="message-text">${message.text}</div>
+                    `;
+                } else {
+                    // Received message will now have 'received' class (aligned to the left)
+                    messageDiv.classList.add('message', 'sent');  
+                    messageDiv.innerHTML = `
+                        <div class="message-text">${message.text}</div>
+                    `;
+                }
+
+                // Fetch sender's profile image dynamically using AJAX
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', '../../function/php/fetch_profile_picture.php?email=' + encodeURIComponent(message.sender), true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        const profileImage = xhr.responseText; // Get the profile image path from the response
+                        if (profileImage) {
+                            const img = document.createElement('img');
+                            img.src = "../../../../assets/img/profile/" + profileImage;
+                            img.alt = "Sender";
+                            img.classList.add('profile-pic');
+                            
+                            messageDiv.insertBefore(img, messageDiv.firstChild); // Add profile picture before message text
+                        }
+                    }
+                };
+                xhr.send();
+
+                // Append the message div to the container
+                messengerContainers.appendChild(messageDiv);
+            });
+
+            // Scroll to the bottom of the message container
+            messengerContainers.scrollTop = messengerContainers.scrollHeight;
+        } else {
+            messengerContainers.innerHTML = '<p>No messages found.</p>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading chat messages:', error);
+        messengerContainers.innerHTML = '<p>Error loading messages. Please try again.</p>';
+    });
+}
+
+// Get uploader_email from PHP and pass it to the loadChat function
+const uploaderEmail = '<?php echo isset($_POST['uploader_email']) ? $_POST['uploader_email'] : ''; ?>';
+const recipientEmail = '<?php echo $_SESSION["email"]; ?>'; // Assuming session email for recipient
+
+if (uploaderEmail) {
+    loadChat(recipientEmail, uploaderEmail);
+} else {
+    console.error('Uploader email is missing!');
+}
+
+
+
+
+
+</script>
+
+
+
+        
+
+        
 
       
      
@@ -231,8 +315,6 @@ if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
         </div>
     </footer>
 
-    <script src="../function/script/slider-img.js"></script>
-    <script src="../../function/script/pre-loadall.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
