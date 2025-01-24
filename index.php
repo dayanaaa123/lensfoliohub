@@ -159,7 +159,7 @@ $conn->close();
     </nav>
 
     <section class="news">
-    <div class="container">
+    <div class="container d-flex justify-content-center align-items-center h-100">
     <?php
 require 'db/db.php';
 
