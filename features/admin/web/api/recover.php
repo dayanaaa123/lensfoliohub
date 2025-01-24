@@ -50,6 +50,11 @@ $result_suppliers = $conn->query($sql_suppliers);
             <a href="#" class="navbar-highlight">
                 <span>Recovery</span>
             </a>
+            <a href="../../../../authentication/web/api/logout.php" style="margin-top: 25vh;">
+                <span>Logout</span>
+            </a>
+     
+
         </div>
 
     </div>

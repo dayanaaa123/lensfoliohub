@@ -174,7 +174,7 @@ if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
 
 if (!empty($uploaderEmail)) {
 
-    $sql = "SELECT u.name, u.profile_img, u.social_link, a.about_me, a.profession, a.latitude, a.longitude, a.age, a.location_text, a.price
+    $sql = "SELECT u.name, u.profile_img, u.social_link, a.about_me, a.profession, a.latitude, a.longitude, a.age, a.location_text, a.price,a.portfolio
             FROM about_me a 
             JOIN users u ON a.email = u.email 
             WHERE a.email = ?";
@@ -200,6 +200,7 @@ if (!empty($uploaderEmail)) {
         $location_text = $user['location_text']; 
         $price = $user['price'];
         $social_link = $user['social_link'];
+        $portfolio = $user['portfolio'];
     } else {
         echo "No data found for this user.";
     }
@@ -268,9 +269,11 @@ $conn->close();
         <h5 class="text-center"><?php echo htmlspecialchars($name); ?></h5>
         <div class="about_mee" style="min-height: 42vh; overflow-y: auto;">
           <p class="text-start context"><?php echo nl2br(htmlspecialchars($about_me)); ?></p>
-            <p class="mb-0">Social Media: </p>
+            <p class="mb-0">Social Media/Portfolio: </p>
+            <div class="d-flex flex-column justify-content-center align-items-center mx-auto">
             <a href="<?php echo htmlspecialchars($social_link); ?>" class="text-start w-75"><?php echo htmlspecialchars($social_link); ?></a>
-        </div> 
+            <a href="<?php echo htmlspecialchars($portfolio); ?>" class="text-start w-75"><?php echo htmlspecialchars($portfolio); ?></a>
+        </div> </div>
         <a href="#" class="btn about-me-button">Hire me</a>
         <button class="btn fw-bold" data-bs-toggle="modal" data-bs-target="#reportModal">...</button>
         <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

@@ -33,18 +33,23 @@ if ($result->num_rows > 0) {
         $cardText = $row['card_text'];
     
         echo '
-        <div class="col-md-3 mb-3 gallery-item position-relative" id="gallery-item-' . $id . '">
-            <img src="../../../../assets/img/snapfeed/' . $imgSrc . '" class="img-fluid img-wh" alt="Image from Snapfeed" 
-                 data-bs-toggle="modal" data-bs-target="#modal-' . $id . '"
-                 data-img-src="' . htmlspecialchars($imgSrc) . '" 
-                 data-img-title="' . htmlspecialchars($imgTitle) . '" 
-                 data-img-text="' . htmlspecialchars($cardText) . '"
-                 data-modal-id="' . $id . '" 
-                 onclick="updateModalContent(this)">
-            <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" data-bs-toggle="modal" data-bs-target="#delete-modal-' . $id . '">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>';
+    <div class="col-md-3 mb-3 gallery-item position-relative" id="gallery-item-' . $id . '">
+        ' . 
+        (in_array(strtolower(pathinfo($imgSrc, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif']) ? 
+            '<img src="../../../../assets/img/snapfeed/' . $imgSrc . '" class="img-fluid img-wh" alt="Image from Snapfeed" onclick="updateModalContent(this)">' : 
+            (in_array(strtolower(pathinfo($imgSrc, PATHINFO_EXTENSION)), ['mp4', 'webm', 'ogg']) ? 
+            '<video class="img-fluid img-wh" controls>
+                <source src="../../../../assets/img/snapfeed/' . $imgSrc . '" type="video/' . pathinfo($imgSrc, PATHINFO_EXTENSION) . '">
+                Your browser does not support the video tag.
+            </video>' : 
+            '<p>Unsupported media type</p>'))
+        . '
+        <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" data-bs-toggle="modal" data-bs-target="#delete-modal-' . $id . '">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>';
+
+
     
         echo '
         <div class="modal fade" id="modal-' . $id . '" tabindex="-1" aria-labelledby="modalLabel-' . $id . '" aria-hidden="true">

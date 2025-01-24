@@ -1,51 +1,52 @@
 <?php
-session_start();  // Start the session to access session variables
+session_start(); 
 
-// Database connection
 require '../../../../db/db.php';
 
-// Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handle the file upload for card image
-    $target_dir = "../../../../assets/img/snapfeed/";  // Folder where images will be stored
-    $file_name = basename($_FILES["card_img"]["name"]); // Get only the file name
-    $card_img = $target_dir . $file_name;  // Create the full file path
+    $target_dir = "../../../../assets/img/snapfeed/";  
+    $file_name = basename($_FILES["card_img"]["name"]); 
+    $card_img = $target_dir . $file_name; 
 
-    // Move the uploaded file to the target directory
-    if (move_uploaded_file($_FILES["card_img"]["tmp_name"], $card_img)) {
-        // File upload was successful
+    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-        // Use the session variable for the card title (assuming 'name' is already set)
-        if (isset($_SESSION['name'])) {
-            $card_title = $_SESSION['name'];  // Retrieve the name from the session
+    $allowed_extensions = array('jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi', 'mov', 'webm'); 
+
+    if (in_array($file_ext, $allowed_extensions)) {
+        if (move_uploaded_file($_FILES["card_img"]["tmp_name"], $card_img)) {
+
+            if (isset($_SESSION['name'])) {
+                $card_title = $_SESSION['name'];  
+            } else {
+                $card_title = "Unknown"; 
+            }
+
+            $card_text = $_POST['card_text'];
+            $img_title = $_POST['img_title'];
+
+            if (isset($_SESSION['email'])) {
+                $email = $_SESSION['email'];
+            } else {
+            }
+
+            // Insert data into the MySQL database
+            $sql = "INSERT INTO snapfeed (img_title, card_img, card_text, email) 
+                    VALUES ('$img_title', '$file_name', '$card_text', '$email')"; // Use the file name here
+
+            if ($conn->query($sql) === TRUE) {
+                header("Location: ../../web/api/snapfeed.php");
+                exit();
+            } else {
+                echo "Error: " . $sql . "<br>" . $conn->error;
+            }
         } else {
-            $card_title = "Unknown";  // Fallback in case the session name is not set
-        }
-
-        $card_text = $_POST['card_text'];
-        $img_title = $_POST['img_title'];
-
-        // Check if email is set in session
-        if (isset($_SESSION['email'])) {
-            $email = $_SESSION['email'];
-        } else {
-            $email = "unknown@example.com";  // Fallback in case the session email is not set
-        }
-
-        // Insert data into the MySQL database
-        $sql = "INSERT INTO snapfeed (img_title, card_img, card_text, email) 
-                VALUES ('$img_title', '$file_name', '$card_text', '$email')"; // Use the file name here
-
-        if ($conn->query($sql) === TRUE) {
-            header("Location: ../../web/api/snapfeed.php");
-            exit();
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            echo "Sorry, there was an error uploading your file.";
         }
     } else {
-        echo "Sorry, there was an error uploading your file.";
+        echo "Sorry, only images and videos (jpg, jpeg, png, gif, mp4, avi, mov, webm) are allowed.";
     }
 }
+
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

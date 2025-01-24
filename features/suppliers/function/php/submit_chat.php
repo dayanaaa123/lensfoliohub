@@ -4,7 +4,6 @@ session_start();
 require '../../../../db/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate and sanitize inputs
     $email = isset($_SESSION['email']) ? $conn->real_escape_string($_SESSION['email']) : null;
     $click_email = isset($_POST['click_email']) ? $conn->real_escape_string($_POST['click_email']) : null;
     $text = isset($_POST['text']) ? $conn->real_escape_string($_POST['text']) : null;
@@ -28,12 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 VALUES ('$email', '$click_email', '$text', '$role')";
 
         if ($conn->query($sql) === TRUE) {
-            // Return only the necessary data (message text, email, etc.)
             echo json_encode([
                 'email' => $email,
                 'text' => $text,
                 'role' => $role,
-                'timestamp' => time(), // Add timestamp if needed
+                'timestamp' => time(),
             ]);
         } else {
             echo json_encode(['error' => 'Failed to insert message']);

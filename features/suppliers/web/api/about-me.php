@@ -41,6 +41,12 @@ if ($role != 'guest' && !empty($email)) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 </head>
+
+<style>
+    body{
+        background-color: #FBF9FA !important;
+    }
+</style>
 <body>
     <div id="preloader">
         <div class="line"></div>
@@ -135,6 +141,7 @@ $latitude = '';
 $longitude = '';
 $price = '';
 $name = ''; 
+$portfolio = '';
 
 // Fetch profile_img from users and other details from about_me
 $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
@@ -153,7 +160,7 @@ $stmt->fetch();
 $stmt->close();
 
 // Fetch remaining details from about_me
-$stmt = $conn->prepare("SELECT name, profession, about_me, age, latitude, longitude, price FROM about_me WHERE email = ?");
+$stmt = $conn->prepare("SELECT name, profession, about_me, age, latitude, longitude, price, portfolio FROM about_me WHERE email = ?");
 if ($stmt === false) {
     die('Prepare failed: ' . $conn->error);
 }
@@ -164,7 +171,7 @@ if (!$stmt->execute()) {
     die('Execute failed: ' . $stmt->error);
 }
 
-$stmt->bind_result($name, $profession, $about_me, $age, $latitude, $longitude, $price);
+$stmt->bind_result($name, $profession, $about_me, $age, $latitude, $longitude, $price, $portfolio);
 
 if (!$stmt->fetch()) {
     // Set defaults if no record is found in about_me
@@ -217,8 +224,36 @@ if (empty($profile_img)) {
                 </div>
 
                 <div class="mb-3">
-                    <textarea class="form-control" name="about_me" placeholder="About me"><?php echo htmlspecialchars($about_me); ?></textarea>
+                    <textarea class="form-control" name="about_me" placeholder="About me" maxlength="150" oninput="countWordsAndChars(this)" id="about_me_textarea"><?php echo htmlspecialchars($about_me); ?></textarea>
+                    <small id="word_count" class="form-text text-muted">Max 50 words, 150 characters</small>
+                </div>
 
+                <script>
+                    function countWordsAndChars(textarea) {
+                        var text = textarea.value.trim();
+                        var wordCount = text.split(/\s+/).length;
+                        if (text === '') {
+                            wordCount = 0;
+                        }
+
+                        var maxWords = 50;
+                        var maxChars = 150;
+
+                        if (wordCount > maxWords) {
+                            textarea.value = text.split(/\s+/).slice(0, maxWords).join(' ');
+                            wordCount = maxWords;
+                        }
+
+                        if (textarea.value.length > maxChars) {
+                            textarea.value = textarea.value.slice(0, maxChars);
+                        }
+
+                        document.getElementById('word_count').textContent = 'Max 50 words, 150 characters (' + wordCount + ' words, ' + textarea.value.length + ' characters)';
+                    }
+                </script>
+
+                <div class="mb-3">
+                    <input type="url" class="form-control" name="portfolio" placeholder="Input your portfolio link Ex. Github/Vercel" value="<?php echo htmlspecialchars($portfolio); ?>">
                 </div>
                 <div class="mb-3">
                     <label for="location">Pin Your Location</label>

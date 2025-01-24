@@ -43,6 +43,9 @@ $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
             <a href="recover.php">
                 <span>Recovery</span>
             </a>
+            <a href="../../../../authentication/web/api/logout.php" style="margin-top: 25vh;">
+                <span>Logout</span>
+            </a>
         </div>
 
     </div>

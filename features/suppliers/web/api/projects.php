@@ -23,8 +23,7 @@ if ($role != 'guest' && !empty($email)) {
     $profileImg = '../../../../assets/img/profile/' . $profileImg;
 }
 
-// Fetch templates from the template1 table based on the session email
-$sql = "SELECT template, profile_image FROM template1 WHERE email = ?";
+$sql = "SELECT template, profile_image, gallery_name FROM template1 WHERE email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
@@ -144,81 +143,108 @@ $stmt->close();
         </div>
 
         <div class="container mt-5">
-            <!-- Buttons to toggle between Style 1 (Grid) and Style 2 (Carousel) -->
-            <div class="text-center mb-3">
-                <button id="style1" class="btn style-btn">Layout 1</button>
-                <button id="style2" class="btn style-btn">Layout 2</button>
+           
+
+        <div class="w-100 d-flex justify-content-end mb-3">
+    <button type="button" class="btn btn-warning text-white w-25" data-bs-toggle="modal" data-bs-target="#uploadModal">
+        + Upload Image
+    </button>
+</div>
+
+<!-- Upload Image Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="../../function/php/template1.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="email" value="<?= $email ?>">
+
+                    <div class="mb-3">
+                        <label for="profile_image" class="form-label">Profile Image</label>
+                        <input type="file" class="form-control" id="profile_image" name="profile_image" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="gallery_name" class="form-label">Gallery Name</label>
+                        <input type="text" class="form-control" id="gallery_name" name="gallery_name" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="grid-layout" class="projects">
+    <div class="row g-3">
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="../../../../assets/img/template/<?= $row['profile_image'] ?>" 
+                         class="img-fluid img-thumbnail w-100" style="height: 30vh; cursor: pointer;" 
+                         alt="Gallery Image" 
+                         data-bs-toggle="modal" 
+                         data-bs-target="#galleryModal<?= $row['gallery_name'] ?>">
+                </div>
             </div>
 
-            <div class="w-100 d-flex justify-content-end">
-                <button type="button" class="btn btn-warning text-white w-25" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                    + Upload Image
-                </button>
-            </div>
-
-            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+            <div class="modal fade" id="galleryModal<?= $row['gallery_name'] ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="uploadModalLabel">Upload Profile Image</h5>
+                            <h5 class="modal-title"><?= $row['gallery_name'] ?> Gallery</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="../../function/php/template1.php" method="POST" enctype="multipart/form-data">
-                                <input type="hidden" name="email" value="<?= $email ?>">
+                            <div class="row g-3">
+                                    <?php 
+                                        $galleryQuery = "SELECT image_name FROM gallery_images WHERE gallery_name = ?";
+                                        $stmtGallery = $conn->prepare($galleryQuery);
+                                        $stmtGallery->bind_param("s", $row['gallery_name']);
+                                        $stmtGallery->execute();
+                                        $galleryResult = $stmtGallery->get_result();
 
-                                <div class="mb-3">
-                                    <label for="profile_image" class="form-label">Profile Image</label>
-                                    <input type="file" class="form-control" id="profile_image" name="profile_image" required>
+                                        while ($galleryRow = $galleryResult->fetch_assoc()):
+                                    ?>
+                                        <div class="col-md-4">
+                                            <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
+                                                class="img-fluid img-thumbnail w-100" 
+                                                alt="Gallery Image" style="height: 30vh;">
+                                        </div>
+                                    <?php endwhile; ?>
+                                    <?php $stmtGallery->close(); ?>
                                 </div>
 
+
+                            <form action="../../function/php/add_to_gallery.php" method="POST" enctype="multipart/form-data" class="mt-4">
+                                <input type="hidden" name="gallery_name" value="<?= $row['gallery_name'] ?>">
+
                                 <div class="mb-3">
-                                    <label for="template" class="form-label">Select Template</label>
-                                    <select class="form-select" id="template" name="template">
-                                        <option value="grid" selected>Grid</option>
-                                        <option value="slide">Slide</option>
-                                    </select>
+                                    <label for="gallery_image" class="form-label">Add Image to <?= $row['gallery_name'] ?> Gallery</label>
+                                    <input type="file" class="form-control" id="gallery_image" name="gallery_image" required>
                                 </div>
-                                
+
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                    <button type="submit" class="btn btn-success">Add to Gallery</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-        
-            <!-- Style 1: Grid Layout -->
-             
-            <div id="grid-layout" class="projects">
-                <div class="row">
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <?php if ($row['template'] === 'grid'): ?>
-                            <div class="col-md-3 mb-3">
-                                <img src="../../../../assets/img/template/<?= $row['profile_image'] ?>" class="img-fluid img-wh" alt="User Image">
-                            </div>
-                        <?php endif; ?>
-                    <?php endwhile; ?>
-                </div>
-            </div>
+        <?php endwhile; ?>
+    </div>
+</div>
 
-            <div id="carousel-layout" class="carousel-container">
-
-                <div class="row">
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <?php if ($row['template'] === 'slide'): ?>
-                            <div class="col-md-3 mb-3">
-                                <img src="../../../../assets/img/template/<?= $row['profile_image'] ?>" class="img-fluid img-wh" alt="User Image">
-                            </div>
-                        <?php endif; ?>
-                    <?php endwhile; ?>
-                </div>
             
-                
-            </div>
-
 
 
     </section>

@@ -54,7 +54,7 @@ if ($role != 'guest' && !empty($email)) {
 
     <nav class="navbar navbar-expand-lg ">
         <div class="container">
-            <a class="navbar-brand d-none d-md-block logo" href="#">
+            <a class="navbar-brand d-none d-md-block logo" href="../../../../index.php">
                 LENSFOLIOHUB
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -131,7 +131,7 @@ if ($role != 'guest' && !empty($email)) {
                         </h5>
                     </div>
 
-                    <input type="file" id="card_img" name="card_img" accept="image/*" required onchange="previewCardImage(event)" class="file-input mt-2">
+                    <input type="file" id="card_img" name="card_img" accept="image/*,video/*" required onchange="previewCardImage(event)" class="file-input mt-2">
                     <input type="text" id="img_title" name="img_title" class="form-control mt-2" required placeholder="Image Title">
                     <textarea id="card_text" name="card_text" rows="4" class="mt-3" required placeholder="Input Photo Caption"></textarea>
                     <input type="submit" value="Submit" class="submit-project mt-2">

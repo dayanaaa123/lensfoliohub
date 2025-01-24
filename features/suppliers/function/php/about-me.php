@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $longitude = $_POST['longitude'];
     $location_text = $_POST['location_text'];
     $price = $_POST['price'];
+    $portfolio = $_POST['portfolio'];  // Get portfolio URL from form
 
     $profileImg = ''; // Initialize variable
 
@@ -109,12 +110,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($exists) {
         // Update existing record in about_me (without profile_image)
-        $stmt = $conn->prepare("UPDATE about_me SET name = ?, profession = ?, about_me = ?, age = ?, latitude = ?, longitude = ?, location_text = ?, price = ? WHERE email = ?");
-        $stmt->bind_param('sssssdsss', $name, $profession, $about_me, $age, $latitude, $longitude, $location_text, $price, $email);
+        $stmt = $conn->prepare("UPDATE about_me SET name = ?, profession = ?, about_me = ?, age = ?, latitude = ?, longitude = ?, location_text = ?, price = ?, portfolio = ? WHERE email = ?");
+        $stmt->bind_param('sssssdssss', $name, $profession, $about_me, $age, $latitude, $longitude, $location_text, $price, $portfolio, $email);
     } else {
         // Insert new record into about_me (with profile_image)
-        $stmt = $conn->prepare("INSERT INTO about_me (name, profession, about_me, age, latitude, longitude, location_text, price, email, profile_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('sssssdssss', $name, $profession, $about_me, $age, $latitude, $longitude, $location_text, $price, $email, $profileImg);
+        $stmt = $conn->prepare("INSERT INTO about_me (name, profession, about_me, age, latitude, longitude, location_text, price, email, profile_image, portfolio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param('sssssdssssss', $name, $profession, $about_me, $age, $latitude, $longitude, $location_text, $price, $email, $profileImg, $portfolio);
     }
 
     // Execute the query for about_me table

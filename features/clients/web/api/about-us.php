@@ -234,44 +234,7 @@ $conn->close();
       </div>
 
 
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <!-- About Section -->
-                <div class="col-md-4">
-                    <h5>About Photography News</h5>
-                    <p>Stay updated with the latest news, trends, and innovations in the world of photography. Whether you're a professional or an enthusiast, our articles are designed to inspire and inform.</p>
-                </div>
-    
-                <!-- Quick Links -->
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Latest News</a></li>
-                        <li><a href="#">Photography Tips</a></li>
-                        <li><a href="#">Camera Reviews</a></li>
-                    </ul>
-                </div>
-    
-                <!-- Contact Section -->
-                <div class="col-md-4">
-                    <h5>Contact Us</h5>
-                    <p>Email: info@photographynews.com</p>
-                    <p>Phone: +123 456 7890</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-4">
-                <p class="mb-0">&copy; 2024 Photography News. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
+  
 
     
     <script src="../../function/script/pre-loadall.js"></script>

@@ -50,6 +50,9 @@ $results = $conn->query($sql);
             <a href="recover.php">
                 <span>Recovery</span>
             </a>
+            <a href="../../../../authentication/web/api/logout.php" style="margin-top: 25vh;">
+                <span>Logout</span>
+            </a>
         </div>
 
     </div>

@@ -93,6 +93,9 @@ $conn->close();
             <a href="recover.php">
                 <span>Recovery</span>
             </a>
+            <a href="../../../../authentication/web/api/logout.php" style="margin-top: 25vh;">
+                <span>Logout</span>
+            </a>
         </div>
 
     </div>
@@ -161,56 +164,75 @@ $conn->close();
                                     <h5 class="chart-title">Total Users Pie Chart</h5>
                                     <canvas id="pieChart" style="max-height: 300px;"></canvas>
                                     <script>
-                                        document.addEventListener("DOMContentLoaded", function () {
-                                            var ctx = document.getElementById('pieChart').getContext('2d');
+                                     document.addEventListener("DOMContentLoaded", function () {
+    var ctx = document.getElementById('pieChart').getContext('2d');
 
-                                            var chartData = <?php echo json_encode($chartData); ?>;
+    var chartData = <?php echo json_encode($chartData); ?>;
 
-                                            var data = {
-                                                labels: ['Customer', 'Supplier'],
-                                                datasets: [{
-                                                    label: 'User Distribution',
-                                                    data: [chartData.customer, chartData.supplier],
-                                                    backgroundColor: [
-                                                        'rgba(75, 192, 192, 0.6)', // Customer color
-                                                        'rgba(255, 159, 64, 0.6)'  // Supplier color
-                                                    ],
-                                                    borderColor: [
-                                                        'rgba(75, 192, 192, 1)',
-                                                        'rgba(255, 159, 64, 1)'
-                                                    ],
-                                                    borderWidth: 1
-                                                }]
-                                            };
+    var data = {
+        labels: ['Customer', 'Supplier'],
+        datasets: [{
+            label: 'User Distribution',
+            data: [chartData.customer, chartData.supplier],
+            backgroundColor: [
+                'rgba(75, 192, 192, 0.6)', // Customer color
+                'rgba(255, 159, 64, 0.6)'  // Supplier color
+            ],
+            borderColor: [
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
 
-                                            new Chart(ctx, {
-                                                type: 'pie',
-                                                data: data,
-                                                options: {
-                                                    responsive: true,
-                                                    plugins: {
-                                                        tooltip: {
-                                                            callbacks: {
-                                                                label: function (context) {
-                                                                    var label = context.label || '';
-                                                                    if (label) {
-                                                                        label += ': ';
-                                                                    }
-                                                                    label += context.raw + ' users';
-                                                                    return label;
-                                                                }
-                                                            }
-                                                        },
-                                                        legend: {
-                                                            display: true,
-                                                            labels: {
-                                                                color: 'black'
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            });
-                                        });
+    new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            var label = context.label || '';
+                            var value = context.raw;
+                            var total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                            var percentage = ((value / total) * 100).toFixed(2);
+
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += value + ' users (' + percentage + '%)';
+                            return label;
+                        }
+                    }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        color: 'black'
+                    }
+                },
+                datalabels: { // Configuration for displaying percentages on the chart
+                    color: 'white',
+                    formatter: (value, context) => {
+                        var total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                        var percentage = ((value / total) * 100).toFixed(2);
+                        return percentage + '%';
+                    },
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels] // Register the datalabels plugin
+    });
+});
+
+
                                     </script>
                                 </div>
                     </div>
@@ -490,6 +512,7 @@ $conn->close();
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="../../function/script/toggle_menu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 </body>
 
 </html>

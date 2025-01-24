@@ -76,11 +76,6 @@ body {
     }
   });
 
-  document.addEventListener("visibilitychange", function () {
-  if (document.hidden) {
-    // Your logic to detect when the page is being hidden (suggesting a screenshot might be taken)
-    alert("Please be aware that screenshots are not allowed.");
-  }
   
 });
 document.addEventListener("visibilitychange", function () {
@@ -134,7 +129,7 @@ document.addEventListener("visibilitychange", function () {
                             <img src="<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-img">
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" href="customer/profile.php">Main Profile</a></li>
+                                <li><a class="dropdown-item" href="profile.php">Main Profile</a></li>
                                             <li><a class="dropdown-item" href="status.php">Booking Status</a></li>
                                             <li><a class="dropdown-item" href="history.php">History</a></li>
                                             <li><a class="dropdown-item" href="notifications.php">Notifications</a></li>
@@ -142,7 +137,6 @@ document.addEventListener("visibilitychange", function () {
                                 </ul>
                             </div>
                         <?php } else { ?>
-                        <!-- User is not logged in, display a login link -->
                         <a href="authentication/web/api/login.php" class="btn-theme" type="button">Login</a>
                     <?php } ?>
                 </div>
