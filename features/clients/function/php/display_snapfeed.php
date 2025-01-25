@@ -222,24 +222,13 @@ if ($result->num_rows > 0) {
                             </div>
                         </div>
     
-                        <!-- Video Section -->
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <h5>Uploader Videos</h5>
-                                <div class="ratio ratio-16x9">
-                                    <video controls>
-                                        <source src="../../../../assets/videos/snapfeed/' . htmlspecialchars($videoSrc) . '" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
         </div>';
 
-     // Closing row div
+   
 }
 }
 
@@ -309,11 +298,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const heartButtons = document.querySelectorAll('.heart-btn');
 
     heartButtons.forEach(function (heartButton) {
+        const id = heartButton.getAttribute('data-id'); // Get the unique ID for the heart button
+        const email = heartButton.getAttribute('data-email');
+        const cardImg = heartButton.getAttribute('data-card-img');
+
+        // Make an AJAX request to check if the heart is already active
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '../../function/php/check_heart_status.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onload = function () {
+            const response = JSON.parse(xhr.responseText);
+            if (response.status === 'success') {
+                if (response.action === 'active') {
+                    heartButton.classList.add('active');
+                }
+            } else {
+                console.error('Error:', response.message);
+            }
+        };
+
+        xhr.send(`email=${encodeURIComponent(email)}&card_img=${encodeURIComponent(cardImg)}`);
+        
+        // Existing heart button click functionality
         heartButton.addEventListener('click', function () {
-            const cardImg = heartButton.getAttribute('data-card-img');
-            const email = heartButton.getAttribute('data-email');
-            const id = heartButton.getAttribute('data-id'); // Get unique ID for this heart button
-            const isActive = heartButton.classList.contains('active'); // Check if heart is active
+            const isActive = heartButton.classList.contains('active');
             const action = isActive ? 'inactive' : 'active';
 
             // Send AJAX request to update heart
@@ -324,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
             xhr.onload = function () {
                 const response = JSON.parse(xhr.responseText);
                 if (response.status === 'success') {
-                    const heartCountElement = document.getElementById('heartCount-' + id); // Use dynamic ID to target specific heart count element
+                    const heartCountElement = document.getElementById('heartCount-' + id);
 
                     // Update UI
                     if (response.action === 'active') {
@@ -335,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Update heart count
                     heartCountElement.textContent = response.hearts_count;
-                } else {    
+                } else {
                     console.error('Error:', response.message);
                 }
             };

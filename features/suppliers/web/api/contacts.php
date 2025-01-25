@@ -128,7 +128,7 @@ $session_email = $_SESSION['email'];
 
 // Modify the query to select the latest message for each email
 $stmt = $conn->prepare("
-    SELECT c.email, c.text
+    SELECT c.email, c.text, c.is_seen
     FROM chat c
     INNER JOIN (
         SELECT email, MAX(id) AS max_id
@@ -147,6 +147,7 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $email = htmlspecialchars($row['email']);
         $text = htmlspecialchars($row['text']);
+        $isSeen = $row['is_seen'];
         
         // Query the 'users' table to get the name and profile image based on the email
         $userQuery = "SELECT name, profile_img FROM users WHERE email = '$email'";
@@ -163,23 +164,54 @@ if ($result->num_rows > 0) {
             $profileImage = 'default-profile.png';
         }
 
+        // If message is unseen, set font-weight to bold
+        $fontWeight = $isSeen == 0 ? 'bold' : 'normal';
+
+        // Output the HTML with the added bold styling
         echo '
-            <div class="messenger-item" data-email="' . $email . '" onclick="document.getElementById(\'click-email\').value = this.getAttribute(\'data-email\'); console.log(this.getAttribute(\'data-email\')); showMessengerContainer(); loadChat(\'' . $email . '\')">
-                <img src="../../../../assets/img/profile/' . $profileImage . '" alt="Receiver" class="profile-pic">
-                <div class="details">
-                    <div class="name">' . $name . '</div>
-                    <div class="message">' . $text . '</div>
-                </div>
-            </div>';
+        <div class="messenger-item" data-email="' . $email . '" onclick="markAsSeenAndToggleBold(this, \'' . $email . '\'); document.getElementById(\'click-email\').value = this.getAttribute(\'data-email\'); showMessengerContainer(); loadChat(\'' . $email . '\')">
+            <img src="../../../../assets/img/profile/' . $profileImage . '" alt="Receiver" class="profile-pic">
+            <div class="details">
+                <div class="name">' . $name . '</div>
+                <div class="message" style="font-weight: ' . $fontWeight . ';">' . $text . '</div>
+            </div>
+        </div>';
     }
 } else {
     echo '<p>No messages found.</p>';
 }
-    
 
-    $stmt->close();
-    $conn->close();
-    ?>
+$stmt->close();
+$conn->close();
+?>
+
+
+<script>
+    function markAsSeenAndToggleBold(element, email) {
+    const messageText = element.querySelector('.message');
+    const currentWeight = messageText.style.fontWeight;
+
+    // Toggle bold or normal
+    messageText.style.fontWeight = currentWeight === 'bold' ? 'normal' : 'bold';
+
+    // If the message was bold and is now clicked, mark it as seen in the database
+    if (messageText.style.fontWeight === 'normal') {
+        // Send AJAX request to update the 'is_seen' field
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '../../function/update_seen_status.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('email=' + email);
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('Message marked as seen');
+            }
+        };
+    }
+}
+
+</script>
+
 </div>
 
 

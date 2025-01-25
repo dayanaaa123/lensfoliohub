@@ -35,14 +35,22 @@ if ($role != 'guest' && !empty($email)) {
         $stmt->execute();
         $stmt->bind_result($name, $profileImg);
         $stmt->fetch();
-        $stmt->close();
-        $conn->close();
+
 
         // Set the profile image path
         $profileImg = !empty($profileImg) ? '../../../../assets/img/profile/' . $profileImg : 'path/to/default-image.jpg';
     } else {
     }
 }
+
+require '../../../../db/db.php';
+
+$sql = "SELECT template, profile_image, gallery_name FROM template1 WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $uploaderEmail);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -143,16 +151,15 @@ if ($role != 'guest' && !empty($email)) {
             </ul>
         </div>
 
-
         <?php
 require '../../../../db/db.php';
 
 // Initialize variables
 $uploaderEmail = ''; 
 $snapfeedImages = [];
-$viewType = 'grid'; // Default view type
+$viewType = ''; // No default view type, will be fetched from the database
 
-// Step 1: Check if email is provided via POST or localStorage
+// Step 1: Check if email_uploader is provided via POST or localStorage
 if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
     $uploaderEmail = htmlspecialchars($_POST['uploader_email']);
 } else {
@@ -181,143 +188,122 @@ if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
     </script>';
     exit;
 }
-
-if (!empty($uploaderEmail)) {
-    $sql_about_me = "SELECT view_type FROM about_me WHERE email = ?";
-    $stmt_about_me = $conn->prepare($sql_about_me);
-    if ($stmt_about_me === false) {
-        die("SQL Error: " . $conn->error);
-    }
-    $stmt_about_me->bind_param("s", $uploaderEmail);
-    $stmt_about_me->execute();
-    $result_about_me = $stmt_about_me->get_result();
-
-    if ($result_about_me->num_rows > 0) {
-        $about_me_data = $result_about_me->fetch_assoc();
-        $viewType = $about_me_data['view_type']; 
-    } else {
-        echo "No view type found for this user.";
-    }
-
-    $stmt_about_me->close();
-
-    // Fetch images from snapfeed
-    $sql_snapfeed = "SELECT card_img FROM snapfeed WHERE email = ?";
-    $stmt_snapfeed = $conn->prepare($sql_snapfeed);
-    if ($stmt_snapfeed === false) {
-        die("SQL Error: " . $conn->error);
-    }
-
-    $stmt_snapfeed->bind_param("s", $uploaderEmail);
-    $stmt_snapfeed->execute();
-    $result_snapfeed = $stmt_snapfeed->get_result();
-
-    // Fetch all image paths
-    while ($row = $result_snapfeed->fetch_assoc()) {
-        $snapfeedImages[] = $row['card_img'];
-    }
-
-    $stmt_snapfeed->close();
-} else {
-    echo "No email provided.";
-}
-
-$conn->close();
 ?>
 
-<div class="container mt-5">
-    <?php if ($viewType === 'grid') : ?>
-        <div id="grid-layout" class="projects" style="display: block;">
-            <div class="row">
-                <?php
-                if (!empty($snapfeedImages)) {
-                    foreach ($snapfeedImages as $image) {
-                        echo '<div class="col-md-3 mb-3">';
-                        echo '<img src="../../../../assets/img/snapfeed/' . htmlspecialchars($image) . '" class="img-fluid img-wh" alt="Image">';
-                        echo '</div>';
-                    }
-                } else {
-                    echo '<p>No images found for this user.</p>';
-                }
-                ?>
+<div id="grid-layout" class="projects">
+    <div class="row g-3">
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="../../../../assets/img/template/<?= $row['profile_image'] ?>" 
+                         class="img-fluid img-thumbnail w-100" style="height: 30vh; cursor: pointer;" 
+                         alt="Gallery Image" 
+                         data-bs-toggle="modal" 
+                         data-bs-target="#galleryModal<?= $row['gallery_name'] ?>">
+                </div>
             </div>
-        </div>
-    <?php elseif ($viewType === 'carousel') : ?>
-        <div id="carousel-layout" class="carousel-container" style="display: block;">
-            <div class="carousel-slider">
-                <?php
-                if (!empty($snapfeedImages)) {
-                    foreach ($snapfeedImages as $index => $image) {
-                        echo '<img id="img' . $index . '" src="../../../../assets/img/snapfeed/' . htmlspecialchars($image) . '" alt="Image" class="carousel-img">';
-                    }
-                } else {
-                    echo '<p>No images found for this user.</p>';
-                }
-                ?>
+
+            <!-- Modal for Gallery -->
+            <div class="modal fade" id="galleryModal<?= $row['gallery_name'] ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><?= $row['gallery_name'] ?> Gallery</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        <?php
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_type'])) {
+                            // Handle the POST request to update the view type
+                            $viewType = $_POST['view_type']; // Get the selected view type from POST
+                            $updateQuery = "UPDATE template1 SET template = ? WHERE email = ?"; 
+                            $stmtUpdate = $conn->prepare($updateQuery);
+                            $stmtUpdate->bind_param("ss", $viewType, $email);
+                            $stmtUpdate->execute();
+                            $stmtUpdate->close();
+
+                            // Set current view directly from POST
+                            $currentView = $viewType;
+                        } 
+
+                        // Fetch the current template value from the database regardless
+                        $fetchQuery = "SELECT template FROM template1 WHERE email = ?";
+                        $stmtFetch = $conn->prepare($fetchQuery);
+                        $stmtFetch->bind_param("s", $uploaderEmail);
+                        $stmtFetch->execute();
+                        $resultFetch = $stmtFetch->get_result();
+
+                        // Directly set the current view based on database value (assumes it only contains valid values)
+                        $rowFetch = $resultFetch->fetch_assoc();
+                        $currentView = $rowFetch['template']; 
+
+                        $stmtFetch->close();
+                        ?>
+
+
+                            <!-- Gallery Content -->
+                            <div class="row g-3">
+                                <?php 
+                                $galleryQuery = "SELECT image_name FROM gallery_images WHERE gallery_name = ?";
+                                $stmtGallery = $conn->prepare($galleryQuery);
+                                $stmtGallery->bind_param("s", $row['gallery_name']);
+                                $stmtGallery->execute();
+                                $galleryResult = $stmtGallery->get_result();
+
+                                if ($currentView === 'grid'): ?>
+                                    <!-- Grid View -->
+                                    <div class="grid">
+                                        <div class="row">
+                                            <?php while ($galleryRow = $galleryResult->fetch_assoc()): ?>
+                                                <div class="col-md-4">
+                                                    <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
+                                                         class="img-fluid img-thumbnail w-100" 
+                                                         alt="Gallery Image" style="height: 30vh;">
+                                                </div>
+                                            <?php endwhile; ?>
+                                        </div>
+                                    </div>
+                                <?php elseif ($currentView === 'carousel'): ?>
+                                    <!-- Carousel View -->
+                                    <div id="galleryCarousel<?= $row['gallery_name'] ?>" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <?php 
+                                            $isActive = true; 
+                                            while ($galleryRow = $galleryResult->fetch_assoc()): ?>
+                                                <div class="carousel-item <?= $isActive ? 'active' : '' ?>">
+                                                    <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
+                                                         class="d-block w-100" 
+                                                         alt="Gallery Image" style="height: 60vh;">
+                                                </div>
+                                                <?php $isActive = false; ?>
+                                            <?php endwhile; ?>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel<?= $row['gallery_name'] ?>" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel<?= $row['gallery_name'] ?>" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                                <?php $stmtGallery->close(); ?>
+                            </div>
+
+                           
+
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="buttons">
-                <button class="prev" onclick="plusSlides(-1)">&#10094;</button>
-                <button class="next" onclick="plusSlides(1)">&#10095;</button>
-            </div>
-        </div>
-    <?php endif; ?>
+        <?php endwhile; ?>
+    </div>
 </div>
 
-<script>
-let slideIndex = 1;
-
-function plusSlides(n) {
-    showSlides(slideIndex += n);
-}
-
-function showSlides(n) {
-    let slides = document.getElementsByClassName("carousel-img");
-    let totalSlides = slides.length;
-
-    if (n > totalSlides - 2) { slideIndex = totalSlides - 2; }
-    if (n < 1) { slideIndex = 1; }
-
-    for (let i = 0; i < totalSlides; i++) {
-        slides[i].style.display = "none";
-        slides[i].classList.remove("middle", "side");
-    }
-
-    for (let i = slideIndex - 1; i < slideIndex + 2; i++) {
-        if (slides[i]) {
-            slides[i].style.display = "block";
-        }
-    }
-
-
-    let middleIndex = slideIndex;
-
-    // Set the middle image
-    if (slides[middleIndex]) {
-        slides[middleIndex].classList.add("middle");
-    }
-
-    // Set the side images
-    if (slides[middleIndex - 1]) {
-        slides[middleIndex - 1].classList.add("side");
-    }
-    if (slides[middleIndex + 1]) {
-        slides[middleIndex + 1].classList.add("side");
-    }
-}
-
-
-// Initialize the carousel to show the first set of images
-showSlides(slideIndex);
-</script>
 
 
 
-    </section>
-
-    <script>
-        
-    </script>
-     
     <div class="wave">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 250" style="margin-bottom: -5px;">
           <path fill="#FAF7F2" fill-opacity="1"

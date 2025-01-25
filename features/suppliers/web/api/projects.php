@@ -196,6 +196,7 @@ $stmt->close();
                 </div>
             </div>
 
+            <!-- Modal for Gallery -->
             <div class="modal fade" id="galleryModal<?= $row['gallery_name'] ?>" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
@@ -204,38 +205,106 @@ $stmt->close();
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+
+                            <!-- View Type Toggle Buttons -->
+                            <div class="mb-3">
+                                <form method="post" action="">
+                                    <button type="submit" name="view_type" value="grid" class="btn <?= isset($currentView) && $currentView == 'grid' ? 'btn-active btn-pri' : 'btn-outline-primary' ?>">Grid</button>
+                                    <button type="submit" name="view_type" value="carousel" class="btn <?= isset($currentView) && $currentView == 'carousel' ? 'btn-active btn-pri' : 'btn-outline-secondary' ?>">Carousel</button>
+                                </form>
+                            </div>
+
+                            <?php
+
+                            // Handle template update
+                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_type'])) {
+                                $viewType = $_POST['view_type'];
+                                
+                                $updateQuery = "UPDATE template1 SET template = ? WHERE email = ?"; 
+                                $stmtUpdate = $conn->prepare($updateQuery);
+                                $stmtUpdate->bind_param("ss", $viewType, $email);
+                                $stmtUpdate->execute();
+                                $stmtUpdate->close();
+                                $currentView = $viewType; 
+                            } else {
+                                // Fetch query for the user based on their email
+                                $fetchQuery = "SELECT template FROM template1 WHERE email = ?";
+                                $stmtFetch = $conn->prepare($fetchQuery);
+                                $stmtFetch->bind_param("s", $email);
+                                $stmtFetch->execute();
+                                $resultFetch = $stmtFetch->get_result();
+                                
+                                // If there's a result, use the template from the database, otherwise default to 'grid'
+                                $rowFetch = $resultFetch->fetch_assoc();
+                                $currentView = $rowFetch['template'] ?? 'grid';
+                                
+                                $stmtFetch->close();
+                            }
+                            ?>
+
+
+                            <!-- Gallery Content -->
                             <div class="row g-3">
-                                    <?php 
-                                        $galleryQuery = "SELECT image_name FROM gallery_images WHERE gallery_name = ?";
-                                        $stmtGallery = $conn->prepare($galleryQuery);
-                                        $stmtGallery->bind_param("s", $row['gallery_name']);
-                                        $stmtGallery->execute();
-                                        $galleryResult = $stmtGallery->get_result();
+                                <?php 
+                                $galleryQuery = "SELECT image_name FROM gallery_images WHERE gallery_name = ?";
+                                $stmtGallery = $conn->prepare($galleryQuery);
+                                $stmtGallery->bind_param("s", $row['gallery_name']);
+                                $stmtGallery->execute();
+                                $galleryResult = $stmtGallery->get_result();
 
-                                        while ($galleryRow = $galleryResult->fetch_assoc()):
-                                    ?>
-                                        <div class="col-md-4">
-                                            <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
-                                                class="img-fluid img-thumbnail w-100" 
-                                                alt="Gallery Image" style="height: 30vh;">
+                                if ($currentView === 'grid'): ?>
+                                    <!-- Grid View -->
+                                    <div class="grid">
+                                        <div class="row">
+                                            <?php while ($galleryRow = $galleryResult->fetch_assoc()): ?>
+                                                <div class="col-md-4">
+                                                    <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
+                                                         class="img-fluid img-thumbnail w-100" 
+                                                         alt="Gallery Image" style="height: 30vh;">
+                                                </div>
+                                            <?php endwhile; ?>
                                         </div>
-                                    <?php endwhile; ?>
-                                    <?php $stmtGallery->close(); ?>
-                                </div>
+                                    </div>
+                                <?php elseif ($currentView === 'carousel'): ?>
+                                    <!-- Carousel View -->
+                                    <div id="galleryCarousel<?= $row['gallery_name'] ?>" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <?php 
+                                            $isActive = true; 
+                                            while ($galleryRow = $galleryResult->fetch_assoc()): ?>
+                                                <div class="carousel-item <?= $isActive ? 'active' : '' ?>">
+                                                    <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
+                                                         class="d-block w-100" 
+                                                         alt="Gallery Image" style="height: 60vh;">
+                                                </div>
+                                                <?php $isActive = false; ?>
+                                            <?php endwhile; ?>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel<?= $row['gallery_name'] ?>" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel<?= $row['gallery_name'] ?>" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                                <?php $stmtGallery->close(); ?>
+                            </div>
 
-
+                            <!-- Add Image Form -->
                             <form action="../../function/php/add_to_gallery.php" method="POST" enctype="multipart/form-data" class="mt-4">
                                 <input type="hidden" name="gallery_name" value="<?= $row['gallery_name'] ?>">
-
                                 <div class="mb-3">
                                     <label for="gallery_image" class="form-label">Add Image to <?= $row['gallery_name'] ?> Gallery</label>
                                     <input type="file" class="form-control" id="gallery_image" name="gallery_image" required>
                                 </div>
-
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-success">Add to Gallery</button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -243,6 +312,7 @@ $stmt->close();
         <?php endwhile; ?>
     </div>
 </div>
+
 
             
 

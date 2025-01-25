@@ -605,3 +605,16 @@ footer p{
         border-radius: 20px;
     }
   /*Contacts End*/
+
+  .btn-active{
+    background-color: #7A3015 !important;
+    color: #fff !important;
+  }
+
+  .btn-pri{
+    border: 1px solid #7A3015 !important;
+  }
+  .btn-pri:hover{
+    background-color: #7A3015 !important;
+    color :#fff !important;
+  }

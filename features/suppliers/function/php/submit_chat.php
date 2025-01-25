@@ -23,16 +23,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($click_email) && !empty($text)) {
+        // Insert the chat message
         $sql = "INSERT INTO chat (email, uploader_email, text, role) 
                 VALUES ('$email', '$click_email', '$text', '$role')";
 
         if ($conn->query($sql) === TRUE) {
-            echo json_encode([
-                'email' => $email,
-                'text' => $text,
-                'role' => $role,
-                'timestamp' => time(),
-            ]);
+            // Insert a notification for the recipient (click_email)
+            $message = "New message! Check it out! New message check it out!";
+           
+
+            $notificationSql = "INSERT INTO notification (email, email_uploader, message) 
+                                VALUES ('$email', '$click_email', '$message')";
+
+            if ($conn->query($notificationSql) === TRUE) {
+                // Send the response back
+                echo json_encode([
+                    'email' => $email,
+                    'text' => $text,
+                    'role' => $role,
+                    'timestamp' => time(),
+                ]);
+            } else {
+                echo json_encode(['error' => 'Failed to insert notification']);
+            }
         } else {
             echo json_encode(['error' => 'Failed to insert message']);
         }
