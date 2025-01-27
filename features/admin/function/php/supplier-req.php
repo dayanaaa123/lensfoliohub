@@ -1,7 +1,7 @@
 <?php
 require '../../../../db/db.php';
 
-$query = "SELECT * FROM users WHERE role = 'supplier' AND verify_s = 2";
+$query = "SELECT * FROM users WHERE role = 'supplier' AND verify_status = 2";
 $result = $conn->query($query);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
