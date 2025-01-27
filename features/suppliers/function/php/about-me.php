@@ -33,11 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->fetch();
         $stmt->close();
 
-        // If an existing image is found, delete it from the folder
         if (!empty($currentProfileImg)) {
-            $filePath = $_SERVER['DOCUMENT_ROOT'] . '/lensfoliohub/assets/img/profile/' . $currentProfileImg;
+            $filePath = '../../../../assets/img/profile/' . $currentProfileImg; // Relative path to the file
             if (file_exists($filePath)) {
-                unlink($filePath); // Delete the file
+                unlink($filePath); 
             }
         }
 
