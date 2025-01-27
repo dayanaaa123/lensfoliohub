@@ -452,7 +452,6 @@ $conn->close();
             <div class="container supplier-reg">
                 <h5>SUPPLIERS REGISTRATION REQUEST</h5>
                 <?php 
-                    include '../../../../db/db.php';
                     $query = "SELECT * FROM users WHERE role = 'supplier' AND verify_status = 2";
                     $result = $conn->query($query);
                 ?>
