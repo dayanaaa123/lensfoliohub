@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['accept'])) {
         $userId = $_POST['id'];
         
-        $updateQuery = "UPDATE users SET is_active = 1 WHERE id = ?";
+        $updateQuery = "UPDATE users SET verify_status = 1 WHERE id = ?";
         $stmt = $conn->prepare($updateQuery);
         $stmt->bind_param("i", $userId);
         if ($stmt->execute()) {
