@@ -28,18 +28,18 @@ if ($role != 'guest' && !empty($email)) {
     }
 
     // Ensure the email is not empty
-    if (!empty($uploaderEmail)) {
-        // Prepare and execute SQL query to fetch uploader's profile image and name
-        $stmt = $conn->prepare("SELECT u.name, u.profile_img FROM users u WHERE u.email = ?");
-        $stmt->bind_param("s", $uploaderEmail);
+    if ($role != 'guest' && !empty($email)) {
+        require '../../../../db/db.php';
+    
+        $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
-        $stmt->bind_result($name, $profileImg);
+        $stmt->bind_result($profileImg);
         $stmt->fetch();
-
-
-        // Set the profile image path
-        $profileImg = !empty($profileImg) ? '../../../../assets/img/profile/' . $profileImg : 'path/to/default-image.jpg';
-    } else {
+        $stmt->close();
+        $conn->close();
+    
+        $profileImg = '' . $profileImg;
     }
 }
 
@@ -103,9 +103,7 @@ $stmt->close();
                 <li class="nav-item">
                         <a class="nav-link" href="supplier.php">Supplier</a>
                     </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="supplier.php">Supplier</a>
-                </li>
+                    
             </ul>
 
             <!-- Profile dropdown (right) -->
@@ -113,7 +111,7 @@ $stmt->close();
                 <?php if ($role != 'guest') { ?>
                     <div class="dropdown">
                         <button class="btn btn-theme dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-img">
+                            <img src="../../../../assets/img/profile/<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-img">
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="profile.php">Main Profile</a></li>

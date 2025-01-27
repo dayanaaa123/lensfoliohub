@@ -6,13 +6,12 @@ require '../../../PHPMailer/src/Exception.php';
 require '../../../PHPMailer/src/PHPMailer.php';
 require '../../../PHPMailer/src/SMTP.php';
 
-include '../../../db/db.php'; // Include your DB connection
+include '../../../db/db.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Check if verification code was entered (this happens after email is sent)
     if (isset($_POST['verification_code']) && $_POST['verification_code'] != '') {
         if ($_POST['verification_code'] == $_SESSION['verification_code']) {
-            // Correct code, update the verify_status to 1
             $email = $_POST['email'];
             $stmt = $conn->prepare("UPDATE users SET verify_status = 2 WHERE email = ?");
             $stmt->bind_param("s", $email);

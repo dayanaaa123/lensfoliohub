@@ -179,7 +179,7 @@ if ($role != 'guest' && !empty($email)) {
                                     <p class="card-text"><strong>Location:</strong> ' . htmlspecialchars($user['location_text']) . '</p>
                                     <p class="card-text"><strong>Profession:</strong> ' . htmlspecialchars($user['profession']) . '</p>
                                     <p class="card-text"><strong>Age:</strong> ' . htmlspecialchars($user['age']) . ' Yrs Old</p>
-                                    <p class="card-text"><strong>Price:</strong> $' . htmlspecialchars($user['price']) . ' / Hr</p>
+                                    <p class="card-text"><strong>Price:</strong> ₱' . htmlspecialchars($user['price']) . ' / Hr</p>
                                    
                                     <div class="card-rating justify-content-start">';
 

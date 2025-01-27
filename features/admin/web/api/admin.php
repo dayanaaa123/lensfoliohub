@@ -112,15 +112,7 @@ $conn->close();
             </button>
 
             <!--Notification and Profile Admin-->
-            <div class="profile-admin">
-                <div class="dropdown">
-                    <button class="" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="../../../../assets/img/profile/profile.png"
-                            style="width: 40px; height: 40px; object-fit: cover;">
-                    </button>
-                  
-                </div>
-            </div>
+            
         </div>
         <div class="dashboard mt-4">
             <h3>Dashboard</h3>

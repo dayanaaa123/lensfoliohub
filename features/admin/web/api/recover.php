@@ -71,15 +71,7 @@ $result_suppliers = $conn->query($sql_suppliers);
             </button>
 
             <!--Notification and Profile Admin-->
-            <div class="profile-admin">
-                <div class="dropdown">
-                    <button class="" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="../../../../assets/img/profile/profile.png"
-                            style="width: 40px; height: 40px; object-fit: cover;">
-                    </button>
-                    
-                </div>
-            </div>
+            
         </div>
         
         
@@ -171,7 +163,7 @@ $result_suppliers = $conn->query($sql_suppliers);
                                             </div>";
                                     }
                                 } else {
-                                    echo "<tr><td colspan='5'>No recovery requests found.</td></tr>";
+                                    echo "<tr><td colspan='6'>No recovery requests found.</td></tr>";
                                 }
                                 ?>
                             </tbody>

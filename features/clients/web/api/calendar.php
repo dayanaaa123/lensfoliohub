@@ -120,6 +120,20 @@ if ($emailUploader) {
     exit;
 }
 
+if ($role != 'guest' && !empty($email)) {
+    require '../../../../db/db.php';
+
+    $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->bind_result($profileImg);
+    $stmt->fetch();
+    $stmt->close();
+    $conn->close();
+
+    $profileImg = '' . $profileImg;
+}
+
 
 ?>
 
@@ -184,7 +198,7 @@ if ($emailUploader) {
                 <?php if ($role != 'guest') { ?>
                     <div class="dropdown">
                         <button class="btn btn-theme dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-img">
+                            <img src="../../../../assets/img/profile/<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-img">
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="profile.php">Main Profile</a></li>

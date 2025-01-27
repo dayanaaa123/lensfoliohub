@@ -278,6 +278,7 @@ body.loaded #preloader {
 /*Top Featured*/
 .top-featured {
     height: 150vh; 
+    background-color: #a67b5b;
 }
 
 @media (min-width: 992px) { 

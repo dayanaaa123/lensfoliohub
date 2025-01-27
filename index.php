@@ -211,10 +211,11 @@ $conn->close();
     <div class="row d-flex justify-content-center">
     <?php
 require 'db/db.php';
-$sql = "SELECT a.supplier_email, SUM(a.rating) AS total_rating
+
+$sql = "SELECT a.supplier_email, AVG(a.rating) AS avg_rating
         FROM ratings a
         GROUP BY a.supplier_email
-        ORDER BY total_rating DESC
+        ORDER BY avg_rating DESC
         LIMIT 3";
 
 $result = $conn->query($sql);
@@ -222,7 +223,7 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $supplier_email = $row['supplier_email'];
-        $total_rating = $row['total_rating'];
+        $avg_rating = number_format($row['avg_rating'], 2); // Format to 2 decimal places
 
         // Get the profile image and name from the users table
         $user_query = "SELECT name, profile_img FROM users WHERE email = ?";
@@ -236,7 +237,7 @@ if ($result->num_rows > 0) {
         $name = $user_data['name'] ?? 'Unknown';
         $profile_img = !empty($user_data['profile_img']) 
             ? htmlspecialchars($user_data['profile_img']) 
-            : 'profile.png'; // Default image
+            : 'profile.png'; 
 
         // Render the card
         echo '<div class="col-md-3">
@@ -244,7 +245,7 @@ if ($result->num_rows > 0) {
                     <img src="assets/img/profile/' . $profile_img . '" alt="Profile Image">
                     <div class="highlight" style="backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 80%; padding: 10px; border-radius: 10px;">
                         <p class="fw-bold"> ' . htmlspecialchars($name) . '</p>
-                        <p>Rating: ' . htmlspecialchars($total_rating) . '<i class="fas fa-star" style="color: #FFD700; font-size: 16px;"></i></p>
+                        <p>Average Rating: ' . htmlspecialchars($avg_rating) . '<i class="fas fa-star" style="color: #FFD700; font-size: 16px;"></i></p>
                     </div>
                 </div>
               </div>';
@@ -253,6 +254,7 @@ if ($result->num_rows > 0) {
     echo '<p>No top suppliers found.</p>';
 }
 ?>
+
     </div>
 </div>
     </div>

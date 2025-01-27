@@ -103,7 +103,7 @@ body {
     align-items: center;
     padding: 20px;
     justify-content: space-between;
-    background-color: var(--theme);
+    background-color: #FBF9FA;
 }
 
 .header button{
