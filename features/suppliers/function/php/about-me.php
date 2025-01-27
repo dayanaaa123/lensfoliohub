@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!empty($currentProfileImg)) {
             $filePath = '../../../../assets/img/profile/' . $currentProfileImg; // Relative path to the file
             if (file_exists($filePath)) {
-                unlink($filePath); 
+                unlink($filePath); // Delete the file
             }
         }
 
@@ -48,10 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->fetch();
         $stmt->close();
 
-        if (!empty($currentAboutMeImg)) {
-            $filePath = $_SERVER['DOCUMENT_ROOT'] . '/lensfoliohub/assets/img/profile/' . $currentAboutMeImg;
+        if (!empty($currentProfileImg)) {
+            $filePath = '../../../../assets/img/profile/' . $currentProfileImg; // Relative path to the file
             if (file_exists($filePath)) {
-                unlink($filePath); 
+                unlink($filePath); // Delete the file
             }
         }
 
