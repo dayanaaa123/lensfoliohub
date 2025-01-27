@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['profile_image']['tmp_name'];
         $fileName = $_FILES['profile_image']['name'];
-        $uploadFileDir = $_SERVER['DOCUMENT_ROOT'] . '/lensfoliohub/assets/img/template/';
+        $uploadFileDir = '../../../../assets/img/template/';
         $dest_path = $uploadFileDir . $fileName;
 
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
