@@ -120,29 +120,32 @@ if ($result->num_rows > 0) {
                                     <div class="comments-box">';
     
                                     $comments_sql = "
-                                        SELECT users.name, users.profile_img, comments.comments 
-                                        FROM comments 
-                                        JOIN snapfeed ON comments.card_img = snapfeed.card_img 
-                                        JOIN users ON comments.session_email = users.email";
-                                    
-                                    $comments_stmt = $conn->prepare($comments_sql);
-                                    $comments_stmt->execute();
-                                    $comments_result = $comments_stmt->get_result();
-    
-                                    if ($comments_result->num_rows > 0) {
-                                        while ($comment_row = $comments_result->fetch_assoc()) {
-                                            $commentName = $comment_row['name'];
-                                            $commentProfileImg = $comment_row['profile_img'] ? '../../../../assets/img/profile/' . $comment_row['profile_img'] : '../../../../default-profile.jpg';
-                                            $commentText = $comment_row['comments'];
-    
-                                            echo '<div class="comment d-flex align-items-center mb-2">
-                                                <img src="' . htmlspecialchars($commentProfileImg) . '" alt="Profile Image" class="rounded-circle me-2" width="40" height="40">
-                                                <strong>' . htmlspecialchars($commentName) . ':</strong> ' . htmlspecialchars($commentText) . '
-                                            </div>';
-                                        }
-                                    } else {
-                                        echo '<p>No comments yet.</p>';
+                                    SELECT users.name, users.profile_img, comments.comments 
+                                    FROM comments 
+                                    JOIN snapfeed ON comments.card_img = snapfeed.card_img 
+                                    JOIN users ON comments.session_email = users.email
+                                    WHERE comments.card_img = ?";  
+                        
+                                // Prepare and execute the query
+                                $comments_stmt = $conn->prepare($comments_sql);
+                                $comments_stmt->bind_param('s', $imgSrc); // Bind the specific card_img (or id) to the query
+                                $comments_stmt->execute();
+                                $comments_result = $comments_stmt->get_result();
+                        
+                                if ($comments_result->num_rows > 0) {
+                                    while ($comment_row = $comments_result->fetch_assoc()) {
+                                        $commentName = $comment_row['name'];
+                                        $commentProfileImg = $comment_row['profile_img'] ? '../../../../assets/img/profile/' . $comment_row['profile_img'] : '../../../../default-profile.jpg';
+                                        $commentText = $comment_row['comments'];
+                        
+                                        echo '<div class="comment d-flex align-items-center mb-2">
+                                            <img src="' . htmlspecialchars($commentProfileImg) . '" alt="Profile Image" class="rounded-circle me-2" width="40" height="40">
+                                            <strong>' . htmlspecialchars($commentName) . ':</strong> ' . htmlspecialchars($commentText) . '
+                                        </div>';
                                     }
+                                } else {
+                                    echo '<p>No comments yet.</p>';
+                                }
     
                                     echo '</div>
                                     <div class="d-flex gap-4">
