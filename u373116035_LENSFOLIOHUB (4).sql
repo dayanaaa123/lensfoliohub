@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jan 24, 2025 at 05:50 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- Host: 127.0.0.1:3306
+-- Generation Time: Jan 27, 2025 at 11:11 AM
+-- Server version: 10.11.10-MariaDB
+-- PHP Version: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `lensfoliohub`
+-- Database: `u373116035_LENSFOLIOHUB`
 --
 
 -- --------------------------------------------------------
@@ -105,21 +105,22 @@ CREATE TABLE `chat` (
   `text` text NOT NULL,
   `role` enum('customer','supplier') NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `click_email` varchar(255) NOT NULL
+  `click_email` varchar(255) NOT NULL,
+  `is_seen` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `chat`
 --
 
-INSERT INTO `chat` (`id`, `email`, `uploader_email`, `text`, `role`, `created_at`, `click_email`) VALUES
-(72, 'client@gmail.com', 'supplier2@gmail.com', 'dsa', 'customer', '2025-01-22 06:24:27', ''),
-(73, 'supplier2@gmail.com', 'client@gmail.com', 'hey', 'supplier', '2025-01-22 06:25:02', ''),
-(74, 'client@gmail.com', 'supplier2@gmail.com', 'hey', 'customer', '2025-01-22 06:32:47', ''),
-(75, 'client@gmail.com', 'supplier2@gmail.com', 'hello bro!', 'customer', '2025-01-22 06:34:29', ''),
-(76, 'client@gmail.com', 'cmalicdon14@gmail.com', 'hey', 'customer', '2025-01-22 06:34:52', ''),
-(77, 'client@gmail.com', 'supplier2@gmail.com', 'I want to avail!', 'customer', '2025-01-22 06:42:23', ''),
-(78, 'supplier2@gmail.com', 'client@gmail.com', 'go', 'supplier', '2025-01-22 06:42:38', '');
+INSERT INTO `chat` (`id`, `email`, `uploader_email`, `text`, `role`, `created_at`, `click_email`, `is_seen`) VALUES
+(72, 'client@gmail.com', 'supplier2@gmail.com', 'dsa', 'customer', '2025-01-22 06:24:27', '', 0),
+(73, 'supplier2@gmail.com', 'client@gmail.com', 'hey', 'supplier', '2025-01-22 06:25:02', '', 0),
+(74, 'client@gmail.com', 'supplier2@gmail.com', 'hey', 'customer', '2025-01-22 06:32:47', '', 0),
+(75, 'client@gmail.com', 'supplier2@gmail.com', 'hello bro!', 'customer', '2025-01-22 06:34:29', '', 0),
+(76, 'client@gmail.com', 'cmalicdon14@gmail.com', 'hey', 'customer', '2025-01-22 06:34:52', '', 0),
+(77, 'client@gmail.com', 'supplier2@gmail.com', 'I want to avail!', 'customer', '2025-01-22 06:42:23', '', 0),
+(78, 'supplier2@gmail.com', 'client@gmail.com', 'go', 'supplier', '2025-01-22 06:42:38', '', 0);
 
 -- --------------------------------------------------------
 
@@ -370,9 +371,10 @@ CREATE TABLE `template1` (
 --
 
 INSERT INTO `template1` (`id`, `email`, `profile_image`, `template`, `gallery_name`) VALUES
-(22, 'supplier1@gmail.com', 'location.png', 'grid', 'default'),
+(22, 'supplier1@gmail.com', 'location.png', 'carousel', 'default'),
 (23, 'supplier2@gmail.com', 'sneaker.jpg', 'grid', 'default'),
-(24, 'supplier2@gmail.com', 'offer.png', 'grid', 'Ivan');
+(24, 'supplier2@gmail.com', 'offer.png', 'grid', 'Ivan'),
+(25, 'supplier2@gmail.com', 'image 7.png', 'grid', 'fsddffds');
 
 -- --------------------------------------------------------
 
@@ -412,18 +414,14 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role`, `name`, `email`, `password`, `created_at`, `updated_at`, `profile_img`, `about_me`, `profession`, `location`, `age`, `day_available`, `is_active`, `last_login`, `disable_status`, `address`, `birthday`, `social_link`, `years_in_profession`, `username`, `test_password`, `verification_code`, `verify_status`) VALUES
-(26, 'admin', 'admin', 'admin@gmail.com', '$2y$10$opUH24g9VfMnpi1qYe634u2OSYi7auE9AP2kFb1maZVZrx8ex5gMy', '2024-11-30 21:26:12', '2025-01-24 16:49:23', 'profile.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-24 16:49:23', 1, '', NULL, '', NULL, '', '', NULL, 1),
-(46, 'supplier', 'Supplier1', 'supplier1@gmail.com', '$2y$10$TETEDH4Y7wsPqvINufFNEec9BUuWWaH/QVKKa7EkxmfMsaUR0YwAm', '2025-01-10 20:43:11', '2025-01-21 16:09:28', 'profile_6780c4f7d44c86.65992713.jpg', NULL, 'videographer', NULL, NULL, ',2025-01-14', 1, '2025-01-21 16:09:28', 1, 'blk 4 lot 23', '2025-01-10', 'https://www.facebook.com', 2024, '', '', NULL, 1),
-(50, 'customer', 'client', 'client@gmail.com', '$2y$10$Uqg3zDXUZPwc66eQEvzQX.zZthau4I71krUY7m4upP2S0plXGHai6', '2025-01-10 21:06:38', '2025-01-24 16:41:03', 'profile_6780cf10964bd9.61209597.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-24 16:41:03', 1, 'blk 4 lot 23', '2025-01-15', 'https://www.facebook.com/', NULL, '', '', NULL, 1),
-(51, 'supplier', 'SUPPLIER2', 'supplier2@gmail.com', '$2y$10$TETEDH4Y7wsPqvINufFNEec9BUuWWaH/QVKKa7EkxmfMsaUR0YwAm', '2025-01-10 06:22:58', '2025-01-24 16:47:07', 'profile_6790957e1bef62.81570936.jpg', NULL, 'photographer', NULL, NULL, ',2025-01-01,2025-01-02,2025-01-03', 1, '2025-01-24 16:47:07', 1, 'tanza', '2002-07-05', 'https://www.facebook.com/collet.kulet', 2, '', '', NULL, 1),
+(26, 'admin', 'admin', 'admin@gmail.com', '$2y$10$opUH24g9VfMnpi1qYe634u2OSYi7auE9AP2kFb1maZVZrx8ex5gMy', '2024-11-30 21:26:12', '2025-01-27 09:20:42', 'profile.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-27 09:20:42', 1, '', NULL, '', NULL, '', '', NULL, 1),
+(46, 'supplier', 'Supplier1', 'supplier1@gmail.com', '$2y$10$TETEDH4Y7wsPqvINufFNEec9BUuWWaH/QVKKa7EkxmfMsaUR0YwAm', '2025-01-10 20:43:11', '2025-01-27 08:57:48', 'profile_6780c4f7d44c86.65992713.jpg', NULL, 'videographer', NULL, NULL, ',2025-01-14', 1, '2025-01-27 08:57:48', 1, 'blk 4 lot 23', '2025-01-10', 'https://www.facebook.com', 2024, '', '', NULL, 1),
+(50, 'customer', 'client', 'client@gmail.com', '$2y$10$Uqg3zDXUZPwc66eQEvzQX.zZthau4I71krUY7m4upP2S0plXGHai6', '2025-01-10 21:06:38', '2025-01-27 09:32:38', 'profile_6780cf10964bd9.61209597.jpg', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-27 09:32:38', 1, 'blk 4 lot 23', '2025-01-15', 'https://www.facebook.com/', NULL, '', '', NULL, 1),
+(51, 'supplier', 'SUPPLIER2', 'supplier2@gmail.com', '$2y$10$TETEDH4Y7wsPqvINufFNEec9BUuWWaH/QVKKa7EkxmfMsaUR0YwAm', '2025-01-10 06:22:58', '2025-01-27 09:21:46', 'profile_6790957e1bef62.81570936.jpg', NULL, 'photographer', NULL, NULL, ',2025-01-01,2025-01-02,2025-01-03', 1, '2025-01-27 09:21:46', 1, 'tanza', '2002-07-05', 'https://www.facebook.com/collet.kulet', 2, '', '', NULL, 1),
 (91, 'supplier', 'Diana', 'bustamantedianamaea@cvsu.edu.ph', '$2y$10$5f3N06R6H7UO9rmIVaLZ/.Q0O.QnBQxvnSrMfN0NMPE5zjOmE4sam', '2025-01-11 17:51:46', '2025-01-11 17:51:46', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-11 17:51:46', 1, 'tanza', '2003-05-07', 'https://m.facebook.com/dianamae.bustamante.3?', 2, '', '', '5793', 0),
 (94, 'customer', 'Ancollet Bucod', 'bucodancollet@gmail.com', '$2y$10$mMnLsV1faoFNbL28QBH78u2EJ1reLYTWBx5d.eBvbG6eZNvCq346G', '2025-01-13 11:51:50', '2025-01-15 10:44:58', 'profile.png', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-15 10:44:58', 1, 'tanza', '2001-06-30', NULL, NULL, '', '', '1326', 1),
 (95, 'supplier', 'collet', 'nacoomercadejas@gmail.com', '$2y$10$yVjznHKKmorgpoMMZLV7Z.jZuYTtNgwwywjWtvIAqYye/M/kbaJbS', '2025-01-13 12:37:32', '2025-01-13 14:40:34', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 1, '2025-01-13 14:40:34', 1, 'tanza', '2003-03-06', 'https://www.facebook.com/collet.kulet', 4, '', '', '1301', 1),
-(96, 'supplier', 'ron carlo lorenzo tapao', 'tapaocholo390@gmail.com', '$2y$10$Q7xVBXA57RoVwhDXiktkueEaAOCpvm6b1PXkAZNz3uwqqRGulZ5bG', '2025-01-13 13:02:25', '2025-01-13 13:03:49', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-13 13:03:49', 1, 'amaya 4 tanza cavite', '2005-12-23', 'https://www.instagram.com/rontapao/', 3, '', '', '8639', 1),
-(97, 'supplier', 'Ryan Kenneth Berjeno ', 'rkberjeno@gmail.com', '$2y$10$wwI2Ryy1MUj.k7Y2e/faRetgTPPYclf6gKN/03RAzV2dp9bZYTDTS', '2025-01-14 08:27:33', '2025-01-14 09:00:26', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 09:00:26', 1, 'Belvedere Tanza, Cavite ', '2002-09-22', 'https://www.facebook.com/Kaye.Berjeno?mibextid=ZbWKwL', 4, '', '', '4029', 1),
 (98, 'customer', 'Alvin', 'amacatoalvin@gmail.com', '$2y$10$/HvtcgSJBtfh50k3j0oFzegXHJHOTjsEVtjaa8MfU8gGdcfHlL1tC', '2025-01-14 09:00:59', '2025-01-14 09:00:59', 'profile.png', NULL, NULL, NULL, NULL, NULL, 0, '2025-01-14 09:00:59', 1, 'Talahiban 1st San Juan Batangas', '1974-11-07', NULL, NULL, '', '', '5059', 0),
-(99, 'supplier', 'Mox', 'mojoshots1@gmail.com', '$2y$10$yX.BADanJGpyUKN4bREf.uNiK1VwodBzypqLSs5S4AwljNgPE1b7y', '2025-01-14 10:59:19', '2025-01-14 11:00:04', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 11:00:04', 1, 'General trias cavite san juan 1', '2004-06-22', 'https://www.instagram.com/moxtorres_?igsh=emtrYWtsMW81OWo3', 2, '', '', '5775', 1),
-(100, 'supplier', 'Naziela', 'mihoqtt14@gmail.com', '$2y$10$rTXmeACB2R/WKom82J7iteVMOswbfRa0pJkHXGev3L0TDjLQ0C2Mi', '2025-01-14 11:32:40', '2025-01-14 11:32:40', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 11:32:40', 1, '134 Anabu 1-A Imus City Cavite', '2002-04-17', 'https://www.facebook.com/clinton.malicdon.2024/', 3, '', '', '7102', 0),
 (101, 'supplier', 'dahhyunnee', 'cmalicdon14@gmail.com', '$2y$10$4fEJnU9SJUM3R0LZMJdrBuvRXpHzTka43qu2kN7ran577fcb4TysG', '2025-01-14 11:34:16', '2025-01-14 12:09:05', 'profile_678653e1bdfd51.03915066.png', NULL, 'photographer', NULL, NULL, ',2025-01-14', 0, '2025-01-14 12:09:05', 1, '134 Anabu 1-A Imus City Cavite', '2002-04-17', 'https://www.facebook.com/clinton.malicdon.2024/', 3, '', '', '5667', 1),
 (102, 'supplier', 'Gello Tim', 'moodvibes683@gmail.com', '$2y$10$SLxAhpuGTv9EHL/g6UIuZ.bXUZ3oXk..Y5rQC9QfRJbyyA9pqd5ti', '2025-01-14 11:58:51', '2025-01-14 11:59:47', 'profile.png', NULL, 'photographer', NULL, NULL, NULL, 0, '2025-01-14 11:59:47', 1, 'Amaya 2 Tanza, Cavite', '2002-03-17', 'https://www.facebook.com/gelo.timcang.7?mibextid=ZbWKwL', 1, '', '', '2503', 1),
 (103, 'supplier', 'erich blu', 'rckbrnl22@gmail.com', '$2y$10$pcWlgLDBBWGe6URVyXhvDe9oDRe0VoWebkMOwi2CiwtfJtwyx9G1S', '2025-01-14 12:02:36', '2025-01-14 12:21:17', 'profile_6786536dc61ff8.28672114.jpg', NULL, 'photographer', NULL, NULL, ',2025-01-01,2025-01-02,2025-01-03,2025-01-04,2025-01-11,2025-01-09,2025-01-10,2025-02-03,2025-02-02,2025-02-08,2025-01-17,2025-02-06', 0, '2025-01-14 12:21:17', 1, 'tanza', '2002-02-08', 'https://www.facebook.com/collet.kulet', 3, '', '', '6290', 1),
@@ -618,7 +616,7 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `snapfeed`
 --
 ALTER TABLE `snapfeed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `sub_news`
@@ -630,7 +628,7 @@ ALTER TABLE `sub_news`
 -- AUTO_INCREMENT for table `template1`
 --
 ALTER TABLE `template1`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `users`
