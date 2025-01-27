@@ -14,8 +14,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['gallery_image']) && $_FILES['gallery_image']['error'] == UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['gallery_image']['tmp_name'];
         $fileName = $_FILES['gallery_image']['name'];
-        $uploadFileDir = $_SERVER['DOCUMENT_ROOT'] . '/lensfoliohub/assets/img/gallery/';
+        
+        // Define the relative path for the upload directory
+        $uploadFileDir = '../../../../assets/img/gallery/';
         $dest_path = $uploadFileDir . $fileName;
+
+        // Ensure the upload directory exists
+        if (!is_dir($uploadFileDir)) {
+            mkdir($uploadFileDir, 0755, true);
+        }
 
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
             $stmt = $conn->prepare("INSERT INTO gallery_images (email, gallery_name, image_name) VALUES (?, ?, ?)");
