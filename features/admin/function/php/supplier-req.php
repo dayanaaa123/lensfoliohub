@@ -6,7 +6,7 @@ $result = $conn->query($query);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['accept'])) {
-        $userId = $_POST['user_id'];
+        $userId = $_POST['id'];
         
         $updateQuery = "UPDATE users SET is_active = 1 WHERE id = ?";
         $stmt = $conn->prepare($updateQuery);
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         header("Location: ../../web/api/admin.php");
     } elseif (isset($_POST['delete'])) {
-        $userId = $_POST['user_id'];
+        $userId = $_POST['id'];
         
         $deleteQuery = "DELETE FROM users WHERE id = ?";
         $stmt = $conn->prepare($deleteQuery);

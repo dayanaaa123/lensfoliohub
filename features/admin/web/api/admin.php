@@ -474,11 +474,11 @@ $conn->close();
                                     <td><?php echo $user['email']; ?></td>
                                     <td class="d-flex gap-1 justify-content-center">
                                     <form method="POST" action="../../function/php/supplier-req.php" style="display:inline;">
-                                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                                        <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
                                         <button type="submit" name="accept" class="btn btn-success">Accept</button>
                                     </form>
                                     <form method="POST" action="../../function/php/supplier-req.php" style="display:inline;">
-                                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                                        <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
                                         <button type="submit" name="delete" class="btn btn-danger">Delete</button>
                                     </form>
                                     </td>
