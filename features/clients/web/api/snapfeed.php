@@ -143,10 +143,8 @@ document.addEventListener("visibilitychange", function () {
             </div>
         </div>
     </nav>
-
     <div class="text-box">
         POWER TO THE CREATORS
-        
     </div> 
         <!-- Image Section -->
         <section class="gallery-img mt-5">

@@ -86,7 +86,7 @@ if ($result->num_rows > 0) {
                     Your browser does not support the video tag.
                   </video>';
         } else {
-            // If the file is an image
+
             echo '<img src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
                          class="img-fluid img-wh w-100" 
                          alt="Image from Snapfeed" 

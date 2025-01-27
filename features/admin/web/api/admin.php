@@ -118,9 +118,7 @@ $conn->close();
                         <img src="../../../../assets/img/profile/profile.png"
                             style="width: 40px; height: 40px; object-fit: cover;">
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="../../../../authentication/web/api/logout.php">Logout</a></li>
-                    </ul>
+                  
                 </div>
             </div>
         </div>
