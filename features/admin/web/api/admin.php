@@ -452,7 +452,9 @@ $conn->close();
             <div class="container supplier-reg">
                 <h5>SUPPLIERS REGISTRATION REQUEST</h5>
                 <?php 
-                    include '../../function/php/supplier-req.php';
+                    include '../../../../db/db.php';
+                    $query = "SELECT * FROM users WHERE role = 'supplier' AND verify_status = 2";
+                    $result = $conn->query($query);
                 ?>
                 <div class="table-wrapper px-lg-5">
                 <table class="table table-hover table-remove-borders" style="background-color: #2A2E32; color: white;">
