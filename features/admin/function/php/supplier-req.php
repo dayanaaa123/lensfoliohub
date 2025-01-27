@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $_SESSION['action_error'] = "Error accepting supplier!";
         }
-        header("Location: ../../web/api/admin.php");
+
     } elseif (isset($_POST['delete'])) {
         $userId = $_POST['id'];
         
