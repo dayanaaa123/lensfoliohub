@@ -1,12 +1,12 @@
 <?php
 require '../../../../db/db.php';
 
-$query = "SELECT * FROM users WHERE role = 'supplier' AND verify_status = 2";
+$query = "SELECT * FROM users WHERE role = 'supplier' AND verify_s = 2";
 $result = $conn->query($query);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['accept'])) {
-        $userId = $_POST['id'];
+        $userId = $_POST['user_id'];
         
         $updateQuery = "UPDATE users SET is_active = 1 WHERE id = ?";
         $stmt = $conn->prepare($updateQuery);
@@ -16,8 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $_SESSION['action_error'] = "Error accepting supplier!";
         }
+        header("Location: ../../web/api/admin.php");
     } elseif (isset($_POST['delete'])) {
-        $userId = $_POST['id'];
+        $userId = $_POST['user_id'];
         
         $deleteQuery = "DELETE FROM users WHERE id = ?";
         $stmt = $conn->prepare($deleteQuery);
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['action_error'] = "Error deleting supplier!";
         }
     }
-    header("Location: ../../web/api/admin.php");
+
     exit();
 }
 
