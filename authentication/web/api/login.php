@@ -384,17 +384,29 @@ document.getElementById('resetCodeForm').addEventListener('submit', function(e) 
 
         <!-- Password Fields -->
         <div class="d-flex gap-2">
-            <div class="input-field">
-                <input type="password" name="password" id="password" required pattern=".{8,}" title="Password must be at least 8 characters long and contain at least one special character">
-                <label for="password">Enter your password</label>
-            </div>
-
-            <div class="input-field">
-                <input type="password" name="confirm-password" id="confirm-password" required>
-                <label for="confirm-password">Confirm your password</label>
-            </div>
-        </div>
+    <div class="input-field">
+        <input type="password" name="password" id="password" required pattern=".{8,}" title="Password must be at least 8 characters long and contain at least one special character">
+        <label for="password">Enter your password</label>
     </div>
+
+    <div class="input-field">
+        <input type="password" name="confirm-password" id="confirm-password" required>
+        <label for="confirm-password">Confirm your password</label>
+    </div>
+
+<button type="button" id="showPassword" class="d-flex btn btn-success fw-bold m-2" onclick="togglePasswordVisibility()">Show</button>
+</div>
+<script>
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById('password');
+        const confirmPasswordField = document.getElementById('confirm-password');
+        
+        const type = passwordField.type === "password" ? "text" : "password";
+        
+        passwordField.type = type;
+        confirmPasswordField.type = type;
+    }
+</script>
 
 
     <!-- Email verification input -->

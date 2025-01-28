@@ -333,10 +333,7 @@ if ($role != 'guest' && !empty($email)) {
         <p><strong>WARRANTY</strong><br>
         - The Supplier warrants that the images are original and free from infringement.</p>
         <p><strong>By signing below, both parties acknowledge reading, understanding, and agreeing to the terms.</strong></p>
-        <p><strong>Signatures</strong><br>
-        Supplier: ___________________________<br>
-        Client: ___________________________<br>
-        Date: <?php echo  $currentDate; ?></p></p>
+        <input type="checkbox" name="" id="" required>I read and understand all.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-bs-dismiss="modal">Agree</button>
