@@ -19,7 +19,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $profileImg = $row['profile_img'];
     $name = $row['name'];
-    $address = $row['location'];
+    $address = $row['address'];
     $birthday = $row['birthday'];
     $social_link = $row['social_link'];
 } else {
