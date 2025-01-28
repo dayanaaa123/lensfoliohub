@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = $user['password'];
 
         // Check if the account is disabled in the reports table
-        $reportStmt = $conn->prepare("SELECT disable_status FROM reports WHERE reported_email = ?");
+        $reportStmt = $conn->prepare("SELECT disable_status FROM users WHERE email = ?");
         $reportStmt->bind_param("s", $email);
         $reportStmt->execute();
         $reportResult = $reportStmt->get_result();
@@ -34,39 +34,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['login_error'] = 'Your account has been disabled. Please <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#recoverModal">Recover</button>';
                 header("Location: ../../web/api/login.php");
                 exit();
+            } elseif ($report['disable_status'] == 1) {
+                // Account is active, proceed with password verification
+                if (password_verify($password, $hashedPassword)) {
+                    $updateQuery = "UPDATE users SET last_login = NOW() WHERE id = ?";
+                    $updateStmt = $conn->prepare($updateQuery);
+                    $updateStmt->bind_param("i", $user['id']);
+                    $updateStmt->execute();
+
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['name'] = $user['name'];
+
+                    // Redirect based on role
+                    if ($user['role'] === 'supplier') {
+                        header("Location: ../../../index.php");
+                        exit();
+                    } elseif ($user['role'] === 'admin') {
+                        header("Location: ../../../features/admin/web/api/admin.php");
+                        exit();
+                    } elseif ($user['role'] === 'customer') {
+                        header("Location: ../../../index.php");
+                        exit();
+                    } else {
+                        $_SESSION['login_error'] = "Invalid role!";
+                        header("Location: ../../web/api/login.php");
+                        exit();
+                    }
+                } else {
+                    $_SESSION['login_error'] = "Invalid email or password!";
+                    header("Location: ../../web/api/login.php");
+                    exit();
+                }
             }
-        }
+        } else {
+            // If no entry exists in reports, proceed with password verification
+            if (password_verify($password, $hashedPassword)) {
+                $updateQuery = "UPDATE users SET last_login = NOW() WHERE id = ?";
+                $updateStmt = $conn->prepare($updateQuery);
+                $updateStmt->bind_param("i", $user['id']);
+                $updateStmt->execute();
 
-        // Verify password
-        if (password_verify($password, $hashedPassword)) {
-            $updateQuery = "UPDATE users SET last_login = NOW() WHERE id = ?";
-            $updateStmt = $conn->prepare($updateQuery);
-            $updateStmt->bind_param("i", $user['id']);
-            $updateStmt->execute();
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['name'] = $user['name'];
 
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['name'] = $user['name'];
-
-            // Redirect based on role
-            if ($user['role'] === 'supplier') {
-                header("Location: ../../../index.php");
-                exit();
-            } elseif ($user['role'] === 'admin') {
-                header("Location: ../../../features/admin/web/api/admin.php");
-                exit();
-            } elseif ($user['role'] === 'customer') {
-                header("Location: ../../../index.php");
-                exit();
+                // Redirect based on role
+                if ($user['role'] === 'supplier') {
+                    header("Location: ../../../index.php");
+                    exit();
+                } elseif ($user['role'] === 'admin') {
+                    header("Location: ../../../features/admin/web/api/admin.php");
+                    exit();
+                } elseif ($user['role'] === 'customer') {
+                    header("Location: ../../../index.php");
+                    exit();
+                } else {
+                    $_SESSION['login_error'] = "Invalid role!";
+                    header("Location: ../../web/api/login.php");
+                    exit();
+                }
             } else {
-                $_SESSION['login_error'] = "Invalid role!";
+                $_SESSION['login_error'] = "Invalid email or password!";
                 header("Location: ../../web/api/login.php");
                 exit();
             }
-        } else {
-            $_SESSION['login_error'] = "Invalid email or password!";
-            header("Location: ../../web/api/login.php");
-            exit();
         }
     } else {
         $_SESSION['login_error'] = "Invalid email or password!";

@@ -10,7 +10,7 @@
     require '../../../../db/db.php';
 
     // Fetch profile image
-    $sql = "SELECT profile_img FROM users WHERE email = ?";
+    $sql = "SELECT profile_image FROM about_me WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();

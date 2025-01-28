@@ -12,16 +12,18 @@ require '../../../../db/db.php';
 
 // Fetch profile image if not a guest
 if ($role != 'guest' && !empty($email)) {
-    // Fetch profile image
-    $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
+    require '../../../../db/db.php';
+
+    $stmt = $conn->prepare("SELECT profile_image FROM about_me WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->bind_result($profileImg);
     $stmt->fetch();
     $stmt->close();
-    
-    $profileImg = '../../../../assets/img/profile/' . $profileImg;
+    $conn->close();
+
 }
+
 
 $sql = "SELECT id, template, profile_image, gallery_name FROM template1 WHERE email = ?";
 $stmt = $conn->prepare($sql);

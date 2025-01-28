@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $location_text = !empty($_POST['location_text']) ? $_POST['location_text'] : null;
     $price = !empty($_POST['price']) ? (float)$_POST['price'] : null;
     $portfolio = !empty($_POST['portfolio']) ? $_POST['portfolio'] : null;
-    $profileImg = ''; // Initialize profile image variable
+    $profileImg = null; // Initialize profile image variable
 
     // Handle file upload for profile image
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
@@ -37,9 +37,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 mkdir($uploadFileDir, 0777, true);
             }
 
+            // Generate a unique name for the image
             $uniqueName = uniqid('profile_', true) . '.' . $fileExtension;
             $dest_path = $uploadFileDir . $uniqueName;
 
+            // Delete old profile image if it exists
+            $stmt = $conn->prepare("SELECT profile_image FROM about_me WHERE email = ?");
+            $stmt->bind_param('s', $email);
+            $stmt->execute();
+            $stmt->store_result();
+            if ($stmt->num_rows > 0) {
+                $stmt->bind_result($oldImage);
+                $stmt->fetch();
+                $stmt->close();
+                
+                // Remove the old image if it exists
+                if ($oldImage && file_exists($uploadFileDir . $oldImage)) {
+                    unlink($uploadFileDir . $oldImage);
+                }
+            }
+            
+            // Move the uploaded file to the target directory
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
                 $profileImg = $uniqueName;
             } else {
@@ -60,9 +78,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($exists) {
         // Update existing record in `about_me` table
-        $stmt = $conn->prepare("UPDATE about_me SET name = ?, profession = ?, about_me = ?, age = ?, latitude = ?, longitude = ?, location_text = ?, price = ?, portfolio = ?, profile_image = ? WHERE email = ?");
+        $query = "UPDATE about_me SET name = ?, profession = ?, about_me = ?, age = ?, latitude = ?, longitude = ?, location_text = ?, price = ?, portfolio = ?";
+        if ($profileImg !== null) {
+            $query .= ", profile_image = ?";
+        }
+        $query .= " WHERE email = ?";
+        
+        $stmt = $conn->prepare($query);
+        if ($profileImg !== null) {
+            $stmt->bind_param(
+                'sssiddsssss',
+                $name,
+                $profession,
+                $about_me,
+                $age,
+                $latitude,
+                $longitude,
+                $location_text,
+                $price,
+                $portfolio,
+                $profileImg,
+                $email
+            );
+        } else {
+            $stmt->bind_param(
+                'sssiddssss',
+                $name,
+                $profession,
+                $about_me,
+                $age,
+                $latitude,
+                $longitude,
+                $location_text,
+                $price,
+                $portfolio,
+                $email
+            );
+        }
+    } else {
+        // Insert new record into `about_me` table
+        $stmt = $conn->prepare("INSERT INTO about_me (name, profession, about_me, age, latitude, longitude, location_text, price, email, profile_image, portfolio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param(
-            'sssiddsssss',
+            'sssiddsdsss',
             $name,
             $profession,
             $about_me,
@@ -71,29 +128,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $longitude,
             $location_text,
             $price,
-            $portfolio,
+            $email,
             $profileImg,
-            $email
+            $portfolio
         );
-    } else {
-        // Insert new record into `about_me` table
-        $stmt = $conn->prepare("INSERT INTO about_me (name, profession, about_me, age, latitude, longitude, location_text, price, email, profile_image, portfolio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param(
-            'sssiddsdsss', // Type string
-            $name,          // Placeholder 1 (s)
-            $profession,    // Placeholder 2 (s)
-            $about_me,      // Placeholder 3 (s)
-            $age,           // Placeholder 4 (i)
-            $latitude,      // Placeholder 5 (d)
-            $longitude,     // Placeholder 6 (d)
-            $location_text, // Placeholder 7 (s)
-            $price,         // Placeholder 8 (d)
-            $email,         // Placeholder 9 (s)
-            $profileImg,    // Placeholder 10 (s)
-            $portfolio      // Placeholder 11 (s)
-        );
-
-        
     }
 
     // Execute the query for `about_me` table
@@ -110,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ../../web/api/about-me.php');
         exit();
     } else {
-        echo 'Error: ' . $stmt->error;
+        die('Error executing query: ' . $stmt->error);
     }
 
     $stmt->close();

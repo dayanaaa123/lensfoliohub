@@ -5,10 +5,10 @@ require '../../../../db/db.php';
 $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
 $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
-$sql_customers = "SELECT * FROM reports WHERE role = 'customer' AND disable_status = 0";
+$sql_customers = "SELECT * FROM reports WHERE role = 'customer'";
 $result_customers = $conn->query($sql_customers);
 
-$sql_suppliers = "SELECT * FROM reports WHERE role = 'supplier' AND disable_status = 0";
+$sql_suppliers = "SELECT * FROM reports WHERE role = 'supplier'";
 $result_suppliers = $conn->query($sql_suppliers);
 
 
@@ -154,7 +154,7 @@ $result_suppliers = $conn->query($sql_suppliers);
                                             </div>";
                                     }
                                 } else {
-                                    echo "<tr><td colspan='8'>No reports found for suppliers.</td></tr>";
+                                    echo "<tr><td colspan='12'>No reports found for suppliers.</td></tr>";
                                 }
                                 ?>
                             </tbody>
