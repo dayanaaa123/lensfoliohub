@@ -142,165 +142,134 @@ $result = $stmt->get_result();
 </nav>
 
 <div class="status">
-    <div class="col-md-8 mx-auto">
-        <?php
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
+    <div class="col-md-12 mx-auto m-2">
+    <?php
+if ($result->num_rows > 0) {
+    echo '<table class="table table-striped table-bordered mt-4">';
+    echo '<thead><tr><th>Name</th><th>Email</th><th>Selected Date</th><th>Supplier Name</th><th>Supplier Email</th><th>Location</th><th>Event</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>';
+    echo '<tbody>';
+    while ($row = $result->fetch_assoc()) {
+        ?>
+        <tr>
+            <td><?php echo htmlspecialchars($row['name']); ?></td>
+            <td><?php echo htmlspecialchars($row['email']); ?></td>
+            <td><?php echo date("M j, Y", strtotime($row['selected_date'])); ?></td>
+            <td><?php echo htmlspecialchars($row['uploader_name']); ?></td>
+            <td><?php echo htmlspecialchars($row['email_uploader']); ?></td>
+            <td>
+                <div id="map-<?php echo $row['id']; ?>" style="height: 200px; width: 300px; border-radius: 10px;"></div>
+                <script>
+                    function initMap<?php echo $row['id']; ?>() {
+                        const location = { lat: <?php echo $row['latitude']; ?>, lng: <?php echo $row['longitude']; ?> };
+                        const map = new google.maps.Map(document.getElementById("map-<?php echo $row['id']; ?>"), {
+                            zoom: 15,
+                            center: location,
+                        });
+                        new google.maps.Marker({
+                            position: location,
+                            map: map,
+                        });
+                    }
+                    google.maps.event.addDomListener(window, "load", initMap<?php echo $row['id']; ?>);
+                </script>
+            </td>
+            <td><?php echo htmlspecialchars($row['event']); ?></td>
+            <td><?php echo htmlspecialchars($row['time']); ?></td>
+            <td>
+                <?php
+                $status = htmlspecialchars($row['status']);
+                $class = "";
+                if ($status === "Pending") {
+                    $class = "btn btn-primary";
+                } elseif ($status === "Accepted") {
+                    $class = "btn btn-success";
+                } elseif ($status === "Completed") {
+                    $class = "btn btn-success fw-bold";
+                } elseif ($status === "Cancelled") {
+                    $class = "btn btn-danger fw-bold";
+                } elseif ($status === "Decline") {
+                    $class = "btn btn-danger";
+                }
                 ?>
-                <div class="card mb-3 mt-4 d-flex justify-content-center mx-auto">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h5 class="card-title fw-bold mb-0 d-flex align-items-center"> <?php echo htmlspecialchars($row['name']); ?></h5>
-                            <div class="button d-flex gap-1 d-flex align-items-center ">
-                            <p class="card-text">
-                                <?php
-                                $status = htmlspecialchars($row['status']);
-                                $class = "";
-                                if ($status === "Pending") {
-                                    $class = "btn btn-primary";
-                                } elseif ($status === "Accepted") {
-                                    $class = "btn btn-success";
-                                } elseif ($status === "Completed") {
-                                    $class = "btn btn-success fw-bold";
-                                } elseif ($status === "Cancelled") {
-                                    $class = "btn btn-danger fw-bold";
-                                } elseif ($status === "Decline") {
-                                    $class = "btn btn-danger";
-                                }
-                                
-                                ?>
-                                <button class="<?php echo $class; ?> mt-3"><?php echo $status; ?></button>
-                            </p>
-                            <?php
-                                if ($row['status'] == 'Pending') {
-                                    echo '<button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal" style="height: 6vh;">Cancel</button>';
-                                }
-                            ?>
-                            <?php
-                                if ($row['status'] == 'Completed') {
-                                    echo '<button class="btn btn-warning text-white btn-md" data-bs-toggle="modal" data-bs-target="#ratingModal">
-                                            Rate Supplier
-                                        </button>';
-                                }
-                            ?>
-                            <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="cancelModalLabel">Cancel Appointment</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="../../function/php/cancel_appointment.php" method="POST" id="cancelForm">
-                                        <div class="mb-3">
-                                            <label for="cancelReason" class="form-label">Cancel Reason</label>
-                                            <textarea class="form-control" id="cancelReason" name="cancelReason" rows="3" required></textarea>
-                                        </div>
-                                        <input type="hidden" id="appointmentId" name="appointmentId" value="<?php echo $row['id']; ?>"> <!-- Hidden input for appointment ID -->
-                                        <button type="submit" class="btn btn-danger d-flex w-50 mx-auto">Submit</button>
-                                        </form>
-                                    </div>
-                                    </div>
-                                </div>
-                                </div>
+                <button class="<?php echo $class; ?>"><?php echo $status; ?></button>
+            </td>
+            <td>
+                <?php
+                if ($row['status'] == 'Pending') {
+                    echo '<button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal" style="height: 6vh;">Cancel</button>';
+                }
+                if ($row['status'] == 'Completed') {
+                    echo '<button class="btn btn-warning text-white btn-md" data-bs-toggle="modal" data-bs-target="#ratingModal">Rate Supplier</button>';
+                }
+                ?>
+            </td>
+        </tr>
+
+        <!-- Cancel Modal -->
+        <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelModalLabel">Cancel Appointment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="../../function/php/cancel_appointment.php" method="POST" id="cancelForm">
+                            <div class="mb-3">
+                                <label for="cancelReason" class="form-label">Cancel Reason</label>
+                                <textarea class="form-control" id="cancelReason" name="cancelReason" rows="3" required></textarea>
                             </div>
-
-                            
-
-                            <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="ratingModalLabel">Rate Supplier</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="../../function/php/submit_rating.php" method="POST" id="ratingForm">
-                                                    <!-- Star Rating -->
-                                                    <div id="starRating" class="d-flex justify-content-center">
-                                                        <span class="star" data-value="1">&#9733;</span>
-                                                        <span class="star" data-value="2">&#9733;</span>
-                                                        <span class="star" data-value="3">&#9733;</span>
-                                                        <span class="star" data-value="4">&#9733;</span>
-                                                        <span class="star" data-value="5">&#9733;</span>
-                                                    </div>
-                                                    <input type="hidden" id="rating" name="rating" value="0"> <!-- Store selected rating -->
-
-                                                    <!-- Optional Review -->
-                                                    <div class="mt-3">
-                                                        <label for="review" class="form-label">Review (Optional):</label>
-                                                        <textarea class="form-control" id="review" name="review" rows="3"></textarea>
-                                                    </div>
-                                                    <!-- Hidden fields for emails -->
-                                                    <input type="hidden" name="user_email" value="<?php echo $_SESSION['email']; ?>"> <!-- Logged-in user's email -->
-                                                    <input type="hidden" name="supplier_email" id="supplier_email" value="<?php echo htmlspecialchars($row['email_uploader']); ?>"> <!-- Supplier's email -->
-                                                    <button type="submit" class="btn btn-primary mt-3">Submit Rating</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                          
-
-                        </div>
-                        <p class="card-text"> <?php echo htmlspecialchars($row['email']); ?></p>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-2">
-                            <p class="card-text">Selected Date:</p>
-                            <?php echo date("M j, Y", strtotime($row['selected_date'])); ?>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <p class="card-text">Supplier Name:</p>
-                            <?php echo htmlspecialchars($row['uploader_name']); ?>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <p class="card-text">Supplier Email:</p>
-                            <?php echo htmlspecialchars($row['email_uploader']); ?>
-                        </div>
-                        <div class="d-flex justify-content-between mb-4">
-                            <p class="card-text">Location:</p>
-                            <div id="map-<?php echo $row['id']; ?>" style="height: 300px; width: 40%; border-radius: 10px;"></div>
-                            <script>
-                                function initMap<?php echo $row['id']; ?>() {
-                                    const location = { lat: <?php echo $row['latitude']; ?>, lng: <?php echo $row['longitude']; ?> };
-                                    const map = new google.maps.Map(document.getElementById("map-<?php echo $row['id']; ?>"), {
-                                        zoom: 15,
-                                        center: location,
-                                    });
-                                    new google.maps.Marker({
-                                        position: location,
-                                        map: map,
-                                    });
-                                }
-                                google.maps.event.addDomListener(window, "load", initMap<?php echo $row['id']; ?>);
-                            </script>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <p class="card-text">Event:</p>
-                            <?php echo htmlspecialchars($row['event']); ?>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <p class="card-text">Time:</p>
-                            <?php echo htmlspecialchars($row['time']); ?>
-                        </div>
-                        <?php
-                            if ($row['status'] == 'Cancelled') {
-                                echo '<div class="d-flex justify-content-between mb-2">';
-                                echo '<p class="card-text">Reason:</p>';
-                                echo '<p>' . htmlspecialchars($row['cancel_reason']) . '</p>';
-                                echo '</div>';
-                            }
-                        ?>
-                        
-                     
+                            <input type="hidden" id="appointmentId" name="appointmentId" value="<?php echo $row['id']; ?>"> <!-- Hidden input for appointment ID -->
+                            <button type="submit" class="btn btn-danger d-flex w-50 mx-auto">Submit</button>
+                        </form>
                     </div>
                 </div>
-                <?php
-            }
-        } else {
-            echo "<div class='alert alert-info text-center'>No appointments found</div>";
-        }
-        ?>
+            </div>
+        </div>
+
+        <!-- Rating Modal -->
+        <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ratingModalLabel">Rate Supplier</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="../../function/php/submit_rating.php" method="POST" id="ratingForm">
+                            <!-- Star Rating -->
+                            <div id="starRating" class="d-flex justify-content-center">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </div>
+                            <input type="hidden" id="rating" name="rating" value="0"> <!-- Store selected rating -->
+
+                            <!-- Optional Review -->
+                            <div class="mt-3">
+                                <label for="review" class="form-label">Review (Optional):</label>
+                                <textarea class="form-control" id="review" name="review" rows="3"></textarea>
+                            </div>
+                            <!-- Hidden fields for emails -->
+                            <input type="hidden" name="user_email" value="<?php echo $_SESSION['email']; ?>"> <!-- Logged-in user's email -->
+                            <input type="hidden" name="supplier_email" id="supplier_email" value="<?php echo htmlspecialchars($row['email_uploader']); ?>"> <!-- Supplier's email -->
+                            <button type="submit" class="btn btn-primary mt-3">Submit Rating</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    echo '</tbody>';
+    echo '</table>';
+} else {
+    echo "<div class='alert alert-info text-center'>No appointments found</div>";
+}
+?>
+
     </div>
 </div>
 

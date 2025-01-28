@@ -384,17 +384,16 @@ document.getElementById('resetCodeForm').addEventListener('submit', function(e) 
 
         <!-- Password Fields -->
         <div class="d-flex gap-2">
-            <div class="input-field">
-                <input type="password" name="password" id="password" required pattern=".{8,}" title="Password must be at least 8 characters long and contain at least one special character">
-                <label for="password">Enter your password</label>
-            </div>
-
-            <div class="input-field">
-                <input type="password" name="confirm-password" id="confirm-password" required>
-                <label for="confirm-password">Confirm your password</label>
-            </div>
-        </div>
+    <div class="input-field">
+        <input type="password" name="password" id="password" required pattern=".{8,}" title="Password must be at least 8 characters long and contain at least one special character">
+        <label for="password">Enter your password</label>
     </div>
+
+    <div class="input-field">
+        <input type="password" name="confirm-password" id="confirm-password" required>
+        <label for="confirm-password">Confirm your password</label>
+    </div>
+
 
 
     <!-- Email verification input -->

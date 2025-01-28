@@ -192,21 +192,23 @@ if ($role != 'guest' && !empty($email)) {
   <!-- Booking Row Example -->
   <?php
 
-  require '../../../../db/db.php';
+require '../../../../db/db.php';
 
-  $query = "SELECT * FROM appointment 
-  WHERE email_uploader = '$email' 
-  ORDER BY 
-      CASE 
-          WHEN status = 'Pending' THEN 1
-          WHEN status = 'Accepted' THEN 2
-          ELSE 3
-      END, 
-      selected_date ASC"; 
+$query = "SELECT * FROM appointment 
+WHERE email_uploader = '$email' 
+AND status != 'Completed' 
+ORDER BY 
+    CASE 
+        WHEN status = 'Pending' THEN 1
+        WHEN status = 'Accepted' THEN 2
+        ELSE 3
+    END, 
+    selected_date ASC"; 
 
-    $result = $conn->query($query);
+$result = $conn->query($query);
 
 ?>
+
 
 
 
