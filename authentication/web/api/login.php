@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
                 // Update the user's password and verification status
-                $stmt = $conn->prepare("UPDATE users SET verify_status = 2, password = ? WHERE email = ?");
+                $stmt = $conn->prepare("UPDATE users SET verify_status = 1, password = ? WHERE email = ?");
                 $stmt->bind_param("ss", $hashed_password, $email);
                 if ($stmt->execute()) {
                     $message = 'Registered Successfully! Click log in to continue';
@@ -384,16 +384,17 @@ document.getElementById('resetCodeForm').addEventListener('submit', function(e) 
 
         <!-- Password Fields -->
         <div class="d-flex gap-2">
-    <div class="input-field">
-        <input type="password" name="password" id="password" required pattern=".{8,}" title="Password must be at least 8 characters long and contain at least one special character">
-        <label for="password">Enter your password</label>
-    </div>
+            <div class="input-field">
+                <input type="password" name="password" id="password" required pattern=".{8,}" title="Password must be at least 8 characters long and contain at least one special character">
+                <label for="password">Enter your password</label>
+            </div>
 
-    <div class="input-field">
-        <input type="password" name="confirm-password" id="confirm-password" required>
-        <label for="confirm-password">Confirm your password</label>
+            <div class="input-field">
+                <input type="password" name="confirm-password" id="confirm-password" required>
+                <label for="confirm-password">Confirm your password</label>
+            </div>
+        </div>
     </div>
-
 
 
     <!-- Email verification input -->
