@@ -195,9 +195,14 @@ if ($role != 'guest' && !empty($email)) {
                 echo '<p>No ratings yet</p>';
             }
             echo '</div>
+             <form action="about-me.php" method="POST" class="mb-0">
+                                        <input type="hidden" name="uploader_email" value="' . htmlspecialchars($user['email']) . '">
+                                        <button type="submit" class="btn btn-primary w-50 mt-3 mx-auto d-flex justify-content-center">Hire me!</button>
+                                    </form>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>';
         }

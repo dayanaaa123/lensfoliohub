@@ -190,42 +190,151 @@ $stmt->close();
                 <div class="card position-relative">
                     <img src="../../../../assets/img/template/<?= $row['profile_image'] ?>" 
                          class="img-fluid img-thumbnail w-100" style="height: 30vh; cursor: pointer;" 
-                         alt="Gallery Image" 
+                         alt="Template Image" 
                          data-bs-toggle="modal" 
-                         data-bs-target="#galleryModal<?= $row['gallery_name'] ?>">
+                         data-bs-target="#templateModal<?= $row['id'] ?>">
 
                     <!-- Delete Icon -->
                     <button type="button" class="btn btn-danger position-absolute top-0 end-0 m-2" 
-                            data-bs-toggle="modal" data-bs-target="#deleteModal<?= $row['id'] ?>" 
-                            onclick="console.log('Deleting Gallery ID:', <?= $row['id'] ?>)">
+                            data-bs-toggle="modal" data-bs-target="#deleteModal<?= $row['id'] ?>">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Modal for Gallery -->
-            <div class="modal fade" id="galleryModal<?= $row['gallery_name'] ?>" tabindex="-1" aria-hidden="true">
-                <!-- Existing gallery modal code... -->
-            </div>
-
-            <!-- Delete Confirmation Modal -->
-            <div class="modal fade" id="deleteModal<?= $row['id'] ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true"> <!-- Use ID here -->
-                <div class="modal-dialog modal-dialog-centered">
+            <!-- Modal for Template -->
+            <div class="modal fade" id="templateModal<?= $row['id'] ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Delete Gallery</h5>
+                            <h5 class="modal-title"><?= $row['id'] ?> Gallery</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to delete this gallery?
+
+                            <!-- View Type Toggle Buttons -->
+                            <div class="mb-3">
+                                <form method="post" action="">
+                                    <button type="submit" name="view_type" value="grid" class="btn <?= isset($currentView) && $currentView == 'grid' ? 'btn-active btn-pri' : 'btn-outline-primary' ?>">Grid</button>
+                                    <button type="submit" name="view_type" value="carousel" class="btn <?= isset($currentView) && $currentView == 'carousel' ? 'btn-active btn-pri' : 'btn-outline-secondary' ?>">Carousel</button>
+                                </form>
+                            </div>
+
+                            <?php
+
+                            // Handle template update
+                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['view_type'])) {
+                                $viewType = $_POST['view_type'];
+                                
+                                $updateQuery = "UPDATE template1 SET template = ? WHERE email = ?"; 
+                                $stmtUpdate = $conn->prepare($updateQuery);
+                                $stmtUpdate->bind_param("ss", $viewType, $email);
+                                $stmtUpdate->execute();
+                                $stmtUpdate->close();
+                                $currentView = $viewType; 
+                            } else {
+                                // Fetch query for the user based on their email
+                                $fetchQuery = "SELECT template FROM template1 WHERE email = ?";
+                                $stmtFetch = $conn->prepare($fetchQuery);
+                                $stmtFetch->bind_param("s", $email);
+                                $stmtFetch->execute();
+                                $resultFetch = $stmtFetch->get_result();
+                                
+                                // If there's a result, use the template from the database, otherwise default to 'grid'
+                                $rowFetch = $resultFetch->fetch_assoc();
+                                $currentView = $rowFetch['template'] ?? 'grid';
+                                
+                                $stmtFetch->close();
+                            }
+                            ?>
+
+
+                            <!-- Gallery Content -->
+                            <div class="row g-3">
+                                <?php 
+                                $galleryQuery = "SELECT image_name FROM gallery_images WHERE gallery_name = ?";
+                                $stmtGallery = $conn->prepare($galleryQuery);
+                                $stmtGallery->bind_param("s", $row['gallery_name']);
+                                $stmtGallery->execute();
+                                $galleryResult = $stmtGallery->get_result();
+
+                                if ($currentView === 'grid'): ?>
+                                    <!-- Grid View -->
+                                    <div class="grid">
+                                        <div class="row">
+                                            <?php while ($galleryRow = $galleryResult->fetch_assoc()): ?>
+                                                <div class="col-md-4">
+                                                    <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
+                                                         class="img-fluid img-thumbnail w-100" 
+                                                         alt="Gallery Image" style="height: 30vh;">
+                                                </div>
+                                            <?php endwhile; ?>
+                                        </div>
+                                    </div>
+                                <?php elseif ($currentView === 'carousel'): ?>
+                                    <!-- Carousel View -->
+                                    <div id="galleryCarousel<?= $row['gallery_name'] ?>" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <?php 
+                                            $isActive = true; 
+                                            while ($galleryRow = $galleryResult->fetch_assoc()): ?>
+                                                <div class="carousel-item <?= $isActive ? 'active' : '' ?>">
+                                                    <img src="../../../../assets/img/gallery/<?= $galleryRow['image_name'] ?>" 
+                                                         class="d-block w-100" 
+                                                         alt="Gallery Image" style="height: 60vh;">
+                                                </div>
+                                                <?php $isActive = false; ?>
+                                            <?php endwhile; ?>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel<?= $row['gallery_name'] ?>" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel<?= $row['gallery_name'] ?>" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                                <?php $stmtGallery->close(); ?>
+                            </div>
+
+                            <!-- Add Image Form -->
+                            <form action="../../function/php/add_to_gallery.php" method="POST" enctype="multipart/form-data" class="mt-4">
+                                <input type="hidden" name="gallery_name" value="<?= $row['gallery_name'] ?>">
+                                <div class="mb-3">
+                                    <label for="gallery_image" class="form-label">Add Image to <?= $row['gallery_name'] ?> Gallery</label>
+                                    <input type="file" class="form-control" id="gallery_image" name="gallery_image" required>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success">Add to Gallery</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal<?= $row['id'] ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Delete Template</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete this template?
                         </div>
                         <div class="modal-footer">
-                        <form method="POST" action="../../function/php/delete_gallery.php" onsubmit="logFormData(event)">
-                            <input type="hidden" name="id" value="<?= $row['id'] ?>"> 
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-
+                            <form method="POST" action="../../function/php/delete_template.php">
+                                <input type="hidden" name="id" value="<?= $row['id'] ?>"> 
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -233,6 +342,7 @@ $stmt->close();
         <?php endwhile; ?>
     </div>
 </div>
+
 
 
 
