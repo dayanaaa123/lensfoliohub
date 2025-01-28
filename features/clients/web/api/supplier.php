@@ -162,8 +162,9 @@ if ($role != 'guest' && !empty($email)) {
         echo '<div class="recent-searches"><div class="row" id="recentSearchResults">'; 
 
         while($user = $result->fetch_assoc()) {
-            $filledStars = round($user['average_rating']) ?: 0;
-            $emptyStars = 5 - $filledStars; 
+            $averageRating = $user['average_rating'];
+            $filledStars = $averageRating ? round($averageRating) : 0;
+            $emptyStars = 5 - $filledStars;
 
             echo '<div class="col-md-6 search-result" data-name="' . strtolower(htmlspecialchars($user['name'])) . '" data-location="' . strtolower(htmlspecialchars($user['location_text'])) . '" data-profession="' . strtolower(htmlspecialchars($user['profession'])) . '" data-price="' . strtolower(htmlspecialchars($user['price'])) . '">
                     <div class="card">
@@ -175,41 +176,40 @@ if ($role != 'guest' && !empty($email)) {
                             <div class="col-md-8">
                                 <div class="card-body">
                                     <p class="card-title"><strong>Name:</strong> ' . htmlspecialchars($user['name']) . '</p>
-                                       <p class="card-title"><strong>Email:</strong> ' . htmlspecialchars($user['email']) . '</p>
+                                    <p class="card-title"><strong>Email:</strong> ' . htmlspecialchars($user['email']) . '</p>
                                     <p class="card-text"><strong>Location:</strong> ' . htmlspecialchars($user['location_text']) . '</p>
                                     <p class="card-text"><strong>Profession:</strong> ' . htmlspecialchars($user['profession']) . '</p>
                                     <p class="card-text"><strong>Age:</strong> ' . htmlspecialchars($user['age']) . ' Yrs Old</p>
-                                    <p class="card-text"><strong>Price:</strong> ₱' . htmlspecialchars($user['price']) . ' / Hr</p>
-                                   
-                                    <div class="card-rating justify-content-start">';
+                                    <p class="card-text"><strong>Price:</strong> ₱' . htmlspecialchars($user['price']) . ' / Hr</p>';
 
-                                    for ($i = 0; $i < $filledStars; $i++) {
-                                        echo '<span class="star">★</span>';
-                                    }
+            // Display rating or "No ratings yet"
+            echo '<div class="card-rating justify-content-start">';
+            if ($averageRating) {
+                for ($i = 0; $i < $filledStars; $i++) {
+                    echo '<span class="star">★</span>';
+                }
+                for ($i = 0; $i < $emptyStars; $i++) {
+                    echo '<span class="star">☆</span>';
+                }
+            } else {
+                echo '<p>No ratings yet</p>';
+            }
+            echo '</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+        }
 
-                                    for ($i = 0; $i < $emptyStars; $i++) {
-                                        echo '<span class="star">☆</span>';
-                                    }
+        echo '</div></div>';
+    } else {
+        echo "No suppliers found.";
+    }
 
-                                    echo '  </div>
-                                    <form action="about-me.php" method="POST" class="mb-0">
-                                        <input type="hidden" name="uploader_email" value="' . htmlspecialchars($user['email']) . '">
-                                        <button type="submit" class="btn btn-primary w-50 mt-3 mx-auto d-flex justify-content-center">Hire me!</button>
-                                    </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>'; 
-                                }
-
-                                echo '</div></div>'; 
-                            } else {
-                                echo "No suppliers found.";
-                            }
-
-                            $conn->close();
-                            ?>   
+    $conn->close();
+?>
+  
 
 
 </div>
