@@ -32,7 +32,9 @@ $stmt->bind_param("sssis", $user_email, $supplier_email, $name, $rating, $review
 
 // Execute the query
 if ($stmt->execute()) {
-    echo "success";
+    // Redirect to status.php with success message
+    header("Location: ../../web/api/status.php?success=1");
+    exit();
 } else {
     echo "error: " . $stmt->error;
 }

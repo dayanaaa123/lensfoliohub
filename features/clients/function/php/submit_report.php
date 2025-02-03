@@ -28,8 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($stmt->execute()) {
-        // Redirect to a success page or display a success message
-        header("Location:../../web/api/about-me.php");
+        header("Location: ../../web/api/about-me.php?success=1");
         exit();
     } else {
         // Handle errors

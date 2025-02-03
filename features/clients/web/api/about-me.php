@@ -305,6 +305,48 @@ $conn->close();
         </div>
       </div>
 
+      <div id="success-message" class="success-box" style="z-index: 999;">
+                <p class="text-white">Report submitted successfully!</p>
+      </div>
+
+      <style>
+      /* Floating Success Message Box */
+      .success-box {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: #28a745;
+          color: white !important;
+          padding: 15px 20px;
+          border-radius: 5px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          display: none; /* Hidden by default */
+          animation: fadeInOut 4s ease-in-out;
+          index: 9999;
+      }
+
+      /* Fade in and out animation */
+      @keyframes fadeInOut {
+          0% { opacity: 0; transform: translateY(10px); }
+          10% { opacity: 1; transform: translateY(0); }
+          90% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(10px); }
+      }
+      </style>
+
+      <script>
+      // Show success message if URL contains 'success=1'
+      window.onload = function() {
+          const urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.has('success')) {
+              document.getElementById('success-message').style.display = 'block';
+              setTimeout(() => {
+                  document.getElementById('success-message').style.display = 'none';
+              }, 4000); // Hide after 4 seconds
+          }
+      };
+      </script>
+
       <div id="slide-2" class="slider-content">
         <p><strong>Location:</strong></p>
         <p><?php echo htmlspecialchars($location_text); ?></p>

@@ -53,6 +53,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: none; /* Hidden by default */
     animation: fadeInOut 4s ease-in-out;
+    z-index: 999;
 }
 
 /* Fade in and out animation */
@@ -165,8 +166,8 @@
 </div>
 </form>
 
-<div id="success-message" class="success-box">
-    <p>Post uploaded successfully!</p>
+<div id="success-message" class="success-box" style="z-index: 999;">
+    <p class="text-white">Post uploaded successfully!</p>
 </div>
 
 <script>
