@@ -448,7 +448,15 @@ textarea{
 }
 
 .gallery-item {
-    position: relative;
+    display: flex;  /* Make sure it's a flex container */
+    flex-direction: column; /* Keeps children stacked vertically */
+}
+
+.gallery-item img,
+.gallery-item video {
+    flex-grow: 0; /* Prevent stretching */
+    width: 100%; /* Let the image/video take up the full width */
+    height: auto; /* Maintain aspect ratio */
 }
 
 .gallery-item .btn {

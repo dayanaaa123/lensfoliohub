@@ -60,37 +60,38 @@ if ($result->num_rows > 0) {
 
         if (pathinfo($imgSrc, PATHINFO_EXTENSION) === 'mp4') {
             echo '<video src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
-                         class="img-fluid img-wh w-100" 
-                         controls 
-                         data-bs-toggle="modal" 
-                         data-bs-target="#modal-' . $id . '"
-                         data-video-src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
-                         data-img-title="' . htmlspecialchars($imgTitle) . '" 
-                         data-img-text="' . htmlspecialchars($cardText) . '"
-                         data-email="' . htmlspecialchars($uploaderEmail) . '"
-                         data-name="' . htmlspecialchars($name) . '"
-                         data-profile-img="' . htmlspecialchars($profileImg) . '"
-                         data-modal-id="' . $id . '" 
-                         onclick="updateModalContent(this)">
+                        class="img-fluid img-wh" 
+                        controls 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modal-' . $id . '"
+                        data-video-src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
+                        data-img-title="' . htmlspecialchars($imgTitle) . '" 
+                        data-img-text="' . htmlspecialchars($cardText) . '"
+                        data-email="' . htmlspecialchars($uploaderEmail) . '"
+                        data-name="' . htmlspecialchars($name) . '"
+                        data-profile-img="' . htmlspecialchars($profileImg) . '"
+                        data-modal-id="' . $id . '" 
+                        onclick="updateModalContent(this)">
                     Your browser does not support the video tag.
-                  </video>';
+                </video>';
         } else {
             echo '<img src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
-                         class="img-fluid img-wh w-100" 
-                         alt="Image from Snapfeed" 
-                         data-bs-toggle="modal" 
-                         data-bs-target="#modal-' . $id . '"
-                         data-img-src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
-                         data-img-title="' . htmlspecialchars($imgTitle) . '" 
-                         data-img-text="' . htmlspecialchars($cardText) . '"
-                         data-email="' . htmlspecialchars($uploaderEmail) . '"
-                         data-name="' . htmlspecialchars($name) . '"
-                         data-profile-img="' . htmlspecialchars($profileImg) . '"
-                         data-modal-id="' . $id . '" 
-                         onclick="updateModalContent(this)">';
+                        class="img-fluid img-wh" 
+                        alt="Image from Snapfeed" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modal-' . $id . '"
+                        data-img-src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
+                        data-img-title="' . htmlspecialchars($imgTitle) . '" 
+                        data-img-text="' . htmlspecialchars($cardText) . '"
+                        data-email="' . htmlspecialchars($uploaderEmail) . '"
+                        data-name="' . htmlspecialchars($name) . '"
+                        data-profile-img="' . htmlspecialchars($profileImg) . '"
+                        data-modal-id="' . $id . '" 
+                        onclick="updateModalContent(this)">';
         }
-        
+
         echo '</div>';
+
 
         // Modal structure (YOUR EXISTING MODAL CODE, UNTOUCHED)
          // Modal structure
