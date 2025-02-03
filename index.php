@@ -143,6 +143,7 @@ $conn->close();
                                 <?php } ?>
                                 <?php if ($role === 'supplier') { ?>
                                     <li><a class="dropdown-item" href="features/suppliers/web/api/about-me.php">Profile</a></li>
+                                    <li><a class="dropdown-item" href="features/suppliers/web/api/acc-status.php">Account Status</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item" href="features/index/function/php/logout.php">Logout</a></li>
                                 

@@ -37,7 +37,10 @@ $sql = "
     WHERE 
         a.email = ?
         AND a.status NOT IN ('completed', 'cancelled')
+    ORDER BY 
+        a.created_at DESC
 ";
+
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);

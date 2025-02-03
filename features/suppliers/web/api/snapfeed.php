@@ -42,6 +42,26 @@
 </head>
 
 <style>
+    .success-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+    animation: fadeInOut 4s ease-in-out;
+}
+
+/* Fade in and out animation */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(10px); }
+}
       
         
 </style>
@@ -88,6 +108,7 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="about-me.php">Main Profile</a></li>
+                        <li><a class="dropdown-item" href="acc-status.php">Account Status</a></li>
                             <li><a class="dropdown-item" href="../../../index/function/php/logout.php">Logout</a></li>
                         </ul>
                             </div>
@@ -143,6 +164,23 @@
     <a href="snapfeeds.php" class="text-decoration-none d-flex align-items-center btn btn-success" style="height: 10vh;">Go to feeds</a>
 </div>
 </form>
+
+<div id="success-message" class="success-box">
+    <p>Post uploaded successfully!</p>
+</div>
+
+<script>
+// Show success message if URL contains 'success=1'
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('success')) {
+        document.getElementById('success-message').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('success-message').style.display = 'none';
+        }, 4000); // Hide after 4 seconds
+    }
+};
+</script>
 
 <!-- JavaScript for Image Preview -->
 <script>

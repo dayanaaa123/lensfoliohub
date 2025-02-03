@@ -34,9 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     VALUES ('$img_title', '$file_name', '$card_text', '$email')"; // Use the file name here
 
             if ($conn->query($sql) === TRUE) {
-                header("Location: ../../web/api/snapfeed.php");
+                header("Location: ../../web/api/snapfeed.php?success=1");
                 exit();
-            } else {
+            }else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
             }
         } else {

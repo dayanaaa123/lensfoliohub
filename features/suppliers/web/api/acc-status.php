@@ -1,26 +1,60 @@
 <?php
-    session_start();
-    if (!isset($_SESSION['email'])) {
-        header("Location: authentication/web/api/login.php");
-        exit();
-    }
-    $email = $_SESSION['email'];
-    $role = $_SESSION['role']; 
+session_start();
 
+// Check if the user is logged in
+if (!isset($_SESSION['email'])) {
+    header("Location: authentication/web/api/login.php");
+    exit();
+}
 
+$email = $_SESSION['email'];  // Session email
+$role = $_SESSION['role'];   // User role
+
+// Database connection
+require '../../../../db/db.php';
+
+// Query to get the reasons for reports where reported_email matches the session email
+$query = "SELECT reason FROM reports WHERE reported_email = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $email);  // Use $email instead of $userEmail
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Initialize the status message
+$statusMessage = 'Good! Keep it up!'; // Default status if no reports
+$reasons = []; // Array to store reasons
+
+// Check the number of reports and collect reasons
+$reportCount = 0;
+while ($row = $result->fetch_assoc()) {
+    $reportCount++;
+    $reasons[] = $row['reason']; // Store each reason in the reasons array
+}
+
+// Set the account status based on the report count
+if ($reportCount == 1) {
+    $statusMessage = "You have 1 report.";
+} elseif ($reportCount == 2) {
+    $statusMessage = "You have 2 reports.";
+} elseif ($reportCount == 4) {
+    $statusMessage = "You have 4 reports.";
+} elseif ($reportCount > 4) {
+    $statusMessage = "You have multiple reports.";
+}
+
+// Fetch profile image if role is not 'guest' and email is valid
 if ($role != 'guest' && !empty($email)) {
-    require '../../../../db/db.php';
-
+    // Query to get the profile image
     $stmt = $conn->prepare("SELECT profile_image FROM about_me WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->bind_result($profileImg);
     $stmt->fetch();
     $stmt->close();
-    $conn->close();
-
 }
 
+// Close the database connection
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -108,23 +142,7 @@ if ($role != 'guest' && !empty($email)) {
 
 
     <section class="supplier-profile">
-        <div class="container mt-5">
-            <ul class="nav justify-content-center">
-                <li class="nav-item">
-                    <a href="#"><button class="nav-link about-me highlight">About Me</button></a>
-                </li>
-                <li class="nav-item">
-                    <a href="projects.php"><button class="nav-link">Projects</button></a>
-                </li>
-                <li class="nav-item">
-                    <a href="calendar.php"><button class="nav-link calendar">Calendar</button></a>
-                </li>
-                <li class="nav-item">
-                    <a href="contacts.php"><button class="nav-link contacts">Message</button></a>
-                </li>
-                
-            </ul>
-        </div>
+         
 
         <?php
 include '../../../../db/db.php';
@@ -197,126 +215,37 @@ if (empty($profile_img)) {
 ?>
 
 
+
+<!-- HTML Code -->
 <div class="about-me-section">
     <div class="container mt-5 about-section">
         <div class="col-md-6 d-flex flex-column justify-content-center card-about">
-            <form enctype="multipart/form-data" method="POST" action="../../function/php/about-me.php" class="about-mes">
-                <div class="mb-3">
-                    <div class="d-flex flex-column mx-auto align-items-center">
-                            <img src="../../../../assets/img/profile/<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-imgs"> 
-                            <h5><?php echo htmlspecialchars($name); ?></h5>                   
+            <h3>Account Status</h3>
+            <p class="btn btn-danger"><?php echo htmlspecialchars($statusMessage); ?></p>
+
+            <!-- If there are reports, show the reasons -->
+            <?php if ($reportCount > 0): ?>
+                <div class="card mt-3">
+                    <div class="card-header text-danger fw-bold">
+                        Reasons for Reports:
                     </div>
-                    <div class="mb-3 d-flex justify-content-center">
-                        <div class="form-check m-1 custom-checkbox">
-                            <input class="form-check-input" type="checkbox" name="profession[]" id="photographer" value="photographer" 
-                                <?php echo in_array('photographer', explode(',', $profession)) ? 'checked' : ''; ?>>
-                            <label class="form-check-label" for="photographer">Photographer</label>
-                        </div>
-                        <div class="form-check m-1 custom-checkbox">
-                            <input class="form-check-input" type="checkbox" name="profession[]" id="videographer" value="videographer" 
-                                <?php echo in_array('videographer', explode(',', $profession)) ? 'checked' : ''; ?>>
-                            <label class="form-check-label" for="videographer">Videographer</label>
-                        </div>
-                    </div>
-
-                    <input class="form-control" type="file" name="profile_img" id="imageUpload" accept="image/*">
+                    <ul class="list-group list-group-flush">
+                        <?php foreach ($reasons as $reason): ?>
+                            <li class="list-group-item"><?php echo htmlspecialchars($reason); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="name" placeholder="Enter your Name..." value="<?php echo htmlspecialchars($name); ?>">
-                </div>
-
-                <div class="mb-3">
-                    <textarea class="form-control" name="about_me" placeholder="About me" maxlength="150" oninput="countWordsAndChars(this)" id="about_me_textarea"><?php echo htmlspecialchars($about_me); ?></textarea>
-                    <small id="word_count" class="form-text text-muted">Max 50 words, 150 characters</small>
-                </div>
-
-                <script>
-                    function countWordsAndChars(textarea) {
-                        var text = textarea.value.trim();
-                        var wordCount = text.split(/\s+/).length;
-                        if (text === '') {
-                            wordCount = 0;
-                        }
-
-                        var maxWords = 50;
-                        var maxChars = 150;
-
-                        if (wordCount > maxWords) {
-                            textarea.value = text.split(/\s+/).slice(0, maxWords).join(' ');
-                            wordCount = maxWords;
-                        }
-
-                        if (textarea.value.length > maxChars) {
-                            textarea.value = textarea.value.slice(0, maxChars);
-                        }
-
-                        document.getElementById('word_count').textContent = 'Max 50 words, 150 characters (' + wordCount + ' words, ' + textarea.value.length + ' characters)';
-                    }
-                </script>
-
-                <div class="mb-3">
-                    <input type="url" class="form-control" name="portfolio" placeholder="Input your portfolio link Ex. Github/Vercel" value="<?php echo htmlspecialchars($portfolio); ?>">
-                </div>
-                <div class="mb-3">
-                    <label for="location">Pin Your Location</label>
-                    <input id="location" name="location_text" class="form-control" type="text" placeholder="Search location">
-                    <div id="map" style="width: 100%; height: 300px;"></div>
-                    <input type="hidden" name="latitude" id="latitude" value="<?php echo htmlspecialchars($latitude); ?>">
-                    <input type="hidden" name="longitude" id="longitude" value="<?php echo htmlspecialchars($longitude); ?>">
-                </div>
-
-                <div class="mb-3">
-                <label for="age">Age:</label>
-                    <input type="number" class="form-control" name="age" placeholder="Age" value="<?php echo htmlspecialchars($age); ?>">
-                </div>
-                
-                <div class="mb-3">
-                    <label for="age">Pricing:</label>
-                    <input type="number" class="form-control" name="price" placeholder="Price" value="<?php echo htmlspecialchars($price); ?>">
-                </div>
-
-                <button type="submit" class="btn about-me-button">Save</button>
-            </form>
-            <hr>
-            <button type="button" class="btn btn-danger d-flex w-50 mt-2 d-flex justify-content-center mx-auto" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                Delete Account
-            </button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Confirm Account Deletion</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to delete this account? You won't recover and all your images will be deleted.
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <form method="POST" action="../../function/php/delete.php">
-                                <input type="hidden" name="delete_account" value="1">
-                                <button type="submit" class="btn btn-danger">Confirm</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <?php endif; ?>
+        </div>
     </div>
 </div>
+
+
          
     </section>
 
      
-    <div class="wave">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 250" style="margin-bottom: -5px;">
-          <path fill="#FAF7F2" fill-opacity="1"
-            d="M0,128L60,138.7C120,149,240,171,360,170.7C480,171,600,149,720,133.3C840,117,960,107,1080,112C1200,117,1320,139,1380,149.3L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z">
-          </path>
-        </svg>
-      </div>
+
 
 
     <script src="../../function/script/slider-img.js"></script>

@@ -90,6 +90,7 @@ if ($role != 'guest' && !empty($email)) {
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="about-me.php">Main Profile</a></li>
+                        <li><a class="dropdown-item" href="acc-status.php">Account Status</a></li>
                             <li><a class="dropdown-item" href="../../../index/function/php/logout.php">Logout</a></li>
                         </ul>
                     </div>
@@ -442,6 +443,16 @@ $result = $conn->query($query);
             dateClick: function(info) {
                 var dateStr = info.dateStr;
 
+                // Get today's date to compare with the clicked date
+                var today = new Date();
+                var clickedDate = new Date(dateStr);
+
+                // If the clicked date is in the past, do not allow it to be marked
+                if (clickedDate < today) {
+                    alert('You cannot select past dates.');
+                    return; // Do nothing if the date is in the past
+                }
+
                 // Toggle the active state of the clicked date
                 if (selectedDates.includes(dateStr)) {
                     // If the date is already active, remove it
@@ -462,6 +473,9 @@ $result = $conn->query($query);
                     // Add the active class to the date element
                     info.el.classList.add('active-date');
                 }
+            },
+            validRange: {
+                start: new Date().toISOString().slice(0, 10) // Set valid range to today's date onwards
             }
         });
 
@@ -517,6 +531,7 @@ $result = $conn->query($query);
             .catch(error => console.error('Fetch error:', error));
     }
 });
+
   </script>
 
 <script>

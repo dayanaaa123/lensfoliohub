@@ -1,20 +1,39 @@
 <?php
 
+require '../../../../db/db.php';
 
-if (!isset($_SESSION['email'])) {
-    header("Location: authentication/web/api/login.php");
-    exit();
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
 $email = $_SESSION['email'];
 $role = $_SESSION['role']; 
 $name = $_SESSION['name'];
 
-require '../../../../db/db.php';
+// Pagination Variables
+$limit = 9; // Number of items per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = max($page, 1); // Ensure page is at least 1
+$offset = ($page - 1) * $limit;
 
+// Get total number of posts
+$totalQuery = "SELECT COUNT(*) AS total FROM snapfeed";
+$totalResult = $conn->query($totalQuery);
+$totalRow = $totalResult->fetch_assoc();
+$totalItems = $totalRow['total'];
+$totalPages = ceil($totalItems / $limit);
 
-$sql = "SELECT id, img_title, card_img, card_text FROM snapfeed WHERE email = ? ORDER BY id DESC";
+$sql = "
+SELECT snapfeed.id, snapfeed.img_title, snapfeed.hearts_count, snapfeed.card_img, snapfeed.card_text, snapfeed.email, 
+       users.name, users.profile_img 
+FROM snapfeed 
+LEFT JOIN users ON snapfeed.email = users.email 
+ORDER BY snapfeed.id DESC
+LIMIT ? OFFSET ?";
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email); 
+$stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -27,125 +46,81 @@ if ($result->num_rows > 0) {
     echo '<div class="row">';
 
     while ($row = $result->fetch_assoc()) {
+        
         $id = $row['id'];
         $imgTitle = $row['img_title'];
         $imgSrc = $row['card_img'];
         $cardText = $row['card_text'];
-    
-        echo '
-    <div class="col-md-3 mb-3 gallery-item position-relative" id="gallery-item-' . $id . '">
-        ' . 
-        (in_array(strtolower(pathinfo($imgSrc, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif']) ? 
-            '<img src="../../../../assets/img/snapfeed/' . $imgSrc . '" class="img-fluid img-wh" alt="Image from Snapfeed" onclick="updateModalContent(this)">' : 
-            (in_array(strtolower(pathinfo($imgSrc, PATHINFO_EXTENSION)), ['mp4', 'webm', 'ogg']) ? 
-            '<video class="img-fluid img-wh" controls>
-                <source src="../../../../assets/img/snapfeed/' . $imgSrc . '" type="video/' . pathinfo($imgSrc, PATHINFO_EXTENSION) . '">
-                Your browser does not support the video tag.
-            </video>' : 
-            '<p>Unsupported media type</p>'))
-        . '
-        <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" data-bs-toggle="modal" data-bs-target="#delete-modal-' . $id . '">
-            <i class="fas fa-trash"></i>
-        </button>
-    </div>';
+        $uploaderEmail = $row['email'];
+        $name = $row['name'] ?? 'Unknown'; 
+        $profileImg = $row['profile_img'] ? '../../../../assets/img/profile/' . $row['profile_img'] : '../../../../default-profile.jpg'; 
+        $heartsCount = $row['hearts_count'] ? $row['hearts_count'] : 0;
 
+        echo '<div class="col-md-4 mb-3 gallery-item position-relative" id="gallery-item-' . $id . '">';
 
-    
-        echo '
-        <div class="modal fade" id="modal-' . $id . '" tabindex="-1" aria-labelledby="modalLabel-' . $id . '" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <img id="modal-main-img-' . $id . '" src="' . $imgSrc . '" class="img-fluid" alt="Image from Snapfeed">
-                            </div>
-                            <div class="col-md-6 d-flex flex-column">
-                                <p id="modal-main-title-' . $id . '" class="img-title">' . htmlspecialchars($imgTitle) . '</p>
-                                <p id="modal-main-text-' . $id . '" class="card-text">' . htmlspecialchars($cardText) . '</p>
-                                <div class="container mt-auto">
-                                    <div class="input-container">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control input-field" placeholder="Type something">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary" type="button">
-                                                    <i class="fas fa-paper-plane"></i> <!-- Send icon -->
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="like-container">
-                                            <button class="like-btn" type="button">
-                                            <i class="fa-regular fa-heart"></i>
-                                            </button>
-                                            <span class="like-count" id="hearts-counts">0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <h5>' . htmlspecialchars($name) . '\'s Gallery</h5>
-                                <div class="row">';
-    
-        $img_sql = "SELECT id, img_title, card_img, card_text FROM snapfeed WHERE email = ? ORDER BY id DESC";
-        $img_stmt = $conn->prepare($img_sql);
-        $img_stmt->bind_param("s", $email);
-        $img_stmt->execute();
-        $img_result = $img_stmt->get_result();
-    
-        if ($img_result->num_rows > 0) {
-            while ($img_row = $img_result->fetch_assoc()) {
-                if ($img_row['card_img'] == $imgSrc) {
-                    continue; 
-                }
-    
-
-                echo '
-                <div class="col-md-4 mb-3 gallery-item" id="gallery-item-' . $img_row['id'] . '">
-                    <img src="' . htmlspecialchars($img_row['card_img']) . '" class="img-fluid modal-img" alt="Additional Image from Snapfeed" 
-                         data-img-src="' . htmlspecialchars($img_row['card_img']) . '" 
-                         data-img-title="' . htmlspecialchars($img_row['img_title']) . '" 
-                         data-img-text="' . htmlspecialchars($img_row['card_text']) . '"
+        if (pathinfo($imgSrc, PATHINFO_EXTENSION) === 'mp4') {
+            echo '<video src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
+                         class="img-fluid img-wh w-100" 
+                         controls 
+                         data-bs-toggle="modal" 
+                         data-bs-target="#modal-' . $id . '"
+                         data-video-src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
+                         data-img-title="' . htmlspecialchars($imgTitle) . '" 
+                         data-img-text="' . htmlspecialchars($cardText) . '"
+                         data-email="' . htmlspecialchars($uploaderEmail) . '"
+                         data-name="' . htmlspecialchars($name) . '"
+                         data-profile-img="' . htmlspecialchars($profileImg) . '"
                          data-modal-id="' . $id . '" 
                          onclick="updateModalContent(this)">
-                </div>';
-            }
+                    Your browser does not support the video tag.
+                  </video>';
+        } else {
+            echo '<img src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
+                         class="img-fluid img-wh w-100" 
+                         alt="Image from Snapfeed" 
+                         data-bs-toggle="modal" 
+                         data-bs-target="#modal-' . $id . '"
+                         data-img-src="../../../../assets/img/snapfeed/' . htmlspecialchars($imgSrc) . '" 
+                         data-img-title="' . htmlspecialchars($imgTitle) . '" 
+                         data-img-text="' . htmlspecialchars($cardText) . '"
+                         data-email="' . htmlspecialchars($uploaderEmail) . '"
+                         data-name="' . htmlspecialchars($name) . '"
+                         data-profile-img="' . htmlspecialchars($profileImg) . '"
+                         data-modal-id="' . $id . '" 
+                         onclick="updateModalContent(this)">';
         }
-    
-        echo '
-                                </div>
-                            </div>
-                        </div>                         
-                    </div>
-                </div>
-            </div>
-        </div>';
-    
-        echo '
-        <div class="modal fade" id="delete-modal-' . $id . '" tabindex="-1" aria-labelledby="deleteModalLabel-' . $id . '" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel-' . $id . '">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete this image?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" onclick="confirmDelete(' . $id . ')">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>';
+        
+        echo '</div>';
+
+        
     }
+
+    echo '</div>'; // End of row
+
+    // Pagination Buttons
+    echo '<nav aria-label="Page navigation">';
+    echo '<ul class="pagination justify-content-center">';
+
+    if ($page > 1) {
+        echo '<li class="page-item"><a class="page-link" href="?page=' . ($page - 1) . '">Previous</a></li>';
+    }
+
+    for ($i = 1; $i <= $totalPages; $i++) {
+        $active = ($i == $page) ? 'active' : '';
+        echo '<li class="page-item ' . $active . '"><a class="page-link" href="?page=' . $i . '">' . $i . '</a></li>';
+    }
+
+    if ($page < $totalPages) {
+        echo '<li class="page-item"><a class="page-link" href="?page=' . ($page + 1) . '">Next</a></li>';
+    }
+
+    echo '</ul>';
+    echo '</nav>';
 }
-    ?>
+
+$conn->close();
+
+?>
 
 
 <script>

@@ -83,6 +83,7 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <li><a class="dropdown-item" href="about-me.php">Main Profile</a></li>
+                            <li><a class="dropdown-item" href="acc-status.php">Account Status</a></li>
                                 <li><a class="dropdown-item" href="../../../index/function/php/logout.php">Logout</a></li>
                             </ul>
                             </div>

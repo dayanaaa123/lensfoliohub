@@ -8,12 +8,17 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 $role = $_SESSION['role'];
+
+
+
 // Retrieve the email_uploader from the URL or POST request
 $emailUploader = '';
-if (isset($_GET['email_uploader'])) {
-    $emailUploader = urldecode($_GET['email_uploader']);
-} elseif (isset($_POST['email_uploader'])) {
-    $emailUploader = htmlspecialchars($_POST['email_uploader']);
+if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
+    $uploaderEmail = htmlspecialchars($_POST['uploader_email']);
+    
+    // Redirect to calendar.php with uploader_email in the query string
+    header("Location: calendar.php?uploader_email=" . urlencode($uploaderEmail));
+    exit();
 }
 
 require '../../../../db/db.php';
@@ -50,7 +55,9 @@ if ($emailUploader != '') {
     $supplierName = "Unknown"; // Default value if email_uploader is not set
 }
 
-if ($emailUploader) {
+if (isset($_GET['uploader_email'])) {
+    $emailUploader = $_GET['uploader_email'];
+
     require '../../../../db/db.php';
 
     // Initialize an array for time options
@@ -111,14 +118,14 @@ if ($emailUploader) {
         $updateStmt->execute();
         $updateStmt->close();
     } else {
-        
+        // Handle the case where no appointment data was found
     }
     $appointmentStmt->close();
-
 } else {
-    echo "No email_uploader parameter provided.";
+    echo "No uploader_email parameter provided.";
     exit;
 }
+
 
 if ($role != 'guest' && !empty($email)) {
     require '../../../../db/db.php';
