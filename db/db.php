@@ -1,13 +1,13 @@
 <?php
-// $servername = "localhost";  
-// $username = "u373116035_diana";         
-// $password = "#Bakitako23";             
-// $dbname = "u373116035_LENSFOLIOHUB";   
-
 $servername = "localhost";  
-$username = "root";         
-$password = "";             
-$dbname = "lensfoliohub";   
+$username = "u373116035_diana";         
+$password = "#Bakitako23";             
+$dbname = "u373116035_LENSFOLIOHUB";   
+
+// $servername = "localhost";  
+// $username = "root";         
+// $password = "";             
+// $dbname = "lensfoliohub";   
 
 
 $conn = new mysqli($servername, $username, $password, $dbname);
