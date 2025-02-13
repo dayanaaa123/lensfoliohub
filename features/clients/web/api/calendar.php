@@ -9,140 +9,102 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $role = $_SESSION['role'];
 
-
-
-// Retrieve the email_uploader from the URL or POST request
-$emailUploader = '';
-if (isset($_POST['uploader_email']) && !empty($_POST['uploader_email'])) {
-    $uploaderEmail = htmlspecialchars($_POST['uploader_email']);
-    
-    // Redirect to calendar.php with uploader_email in the query string
-    header("Location: calendar.php?uploader_email=" . urlencode($uploaderEmail));
-    exit();
-}
+// Default values
+$emailUploader = ''; 
+$supplierName = "Unknown"; // Default name
 
 require '../../../../db/db.php';
+
+// Fetch logged-in user's name
 $sqlClient = "SELECT name FROM users WHERE email = ?";
 $stmtClient = $conn->prepare($sqlClient);
-$stmtClient->bind_param("s", $email); // Bind the session email
+$stmtClient->bind_param("s", $email);
 $stmtClient->execute();
 $resultClient = $stmtClient->get_result();
 
 if ($resultClient->num_rows > 0) {
-    // Fetch the first_name and last_name from the result
     $rowClient = $resultClient->fetch_assoc();
     $clientName = $rowClient['name'];
 }
 
 $stmtClient->close();
 
-if ($emailUploader != '') {
-    $sql = "SELECT name FROM about_me WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $emailUploader); // Bind the email parameter
-    $stmt->execute();
-    $result = $stmt->get_result();
+// Fetch supplier name from `about_me` if available
+$sql = "SELECT name FROM about_me WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        // Fetch the name from the result
-        $row = $result->fetch_assoc();
-        $supplierName = $row['name']; // Store the supplier's name
-    } else {
-        $supplierName = "Unknown"; // Default value if no match found
-    }
-
-} else {
-    $supplierName = "Unknown"; // Default value if email_uploader is not set
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $supplierName = $row['name'];
 }
 
-if (isset($_GET['uploader_email'])) {
-    $emailUploader = $_GET['uploader_email'];
+$stmt->close();
 
-    require '../../../../db/db.php';
+// Fetch available hours from `about_me`
+$timeOptions = [];
+$stmt = $conn->prepare("SELECT avail_hrs FROM about_me WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // Initialize an array for time options
-    $timeOptions = [];
+if ($row = $result->fetch_assoc()) {
+    $availHrs = $row['avail_hrs'];
+    $availHrsArray = explode(',', $availHrs);
 
-    // Query to get available hours from about_me table
-    $stmt = $conn->prepare("SELECT avail_hrs FROM about_me WHERE email = ?");
-    $stmt->bind_param("s", $emailUploader);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
-        // If data exists, process the avail_hrs field
-        $availHrs = $row['avail_hrs'];
-        $availHrsArray = explode(',', $availHrs);
-
-        // Sort the available hours array to ensure it is in the correct order (12 AM to 11 PM)
-        sort($availHrsArray);
-
-        // Create options for the time select dropdown
-        foreach ($availHrsArray as $hour) {
-            $hour = (int)$hour;
-            // Format the time as 12 AM, 1 AM, ..., 11 PM
-            $formattedTime = date("g a", strtotime("$hour:00"));
-            $timeOptions[] = "<option value='$hour'>$formattedTime</option>";
-        }
+    // Sort and format the available hours
+    sort($availHrsArray);
+    foreach ($availHrsArray as $hour) {
+        $formattedTime = date("g a", strtotime("$hour:00"));
+        $timeOptions[] = "<option value='$hour'>$formattedTime</option>";
     }
-    $stmt->close();
-
-    // Fetch the time from the appointment table for the given email_uploader
-    $appointmentStmt = $conn->prepare("SELECT time FROM appointment WHERE email_uploader = ?");
-    $appointmentStmt->bind_param("s", $emailUploader);
-    $appointmentStmt->execute();
-    $appointmentResult = $appointmentStmt->get_result();
-
-    if ($appointmentRow = $appointmentResult->fetch_assoc()) {
-        // Get the time from the appointment table
-        $time = (int)$appointmentRow['time']; // Assuming 'time' is stored as an integer (e.g., 3, 14)
-
-        // Remove the selected time from avail_hrs array
-        if (($key = array_search($time, $availHrsArray)) !== false) {
-            // Remove the value if it exists
-            unset($availHrsArray[$key]);
-        } else {
-            // Add the new time if it's not already in the array
-            $availHrsArray[] = $time;
-        }
-
-        // Sort the updated array to maintain the correct order
-        sort($availHrsArray);
-
-        // Convert the updated array back to a string and update avail_hrs
-        $updatedAvailHrs = implode(',', $availHrsArray);
-
-        // Update the about_me table with the new avail_hrs
-        $updateStmt = $conn->prepare("UPDATE about_me SET avail_hrs = ? WHERE email = ?");
-        $updateStmt->bind_param("ss", $updatedAvailHrs, $emailUploader);
-        $updateStmt->execute();
-        $updateStmt->close();
-    } else {
-        // Handle the case where no appointment data was found
-    }
-    $appointmentStmt->close();
-} else {
-    echo "No uploader_email parameter provided.";
-    exit;
 }
 
+$stmt->close();
 
+// Fetch appointment time and update `avail_hrs`
+$appointmentStmt = $conn->prepare("SELECT time FROM appointment WHERE email_uploader = ?");
+$appointmentStmt->bind_param("s", $email);
+$appointmentStmt->execute();
+$appointmentResult = $appointmentStmt->get_result();
+
+if ($appointmentRow = $appointmentResult->fetch_assoc()) {
+    $time = (int)$appointmentRow['time'];
+
+    if (($key = array_search($time, $availHrsArray)) !== false) {
+        unset($availHrsArray[$key]);
+    } else {
+        $availHrsArray[] = $time;
+    }
+
+    sort($availHrsArray);
+    $updatedAvailHrs = implode(',', $availHrsArray);
+
+    $updateStmt = $conn->prepare("UPDATE about_me SET avail_hrs = ? WHERE email = ?");
+    $updateStmt->bind_param("ss", $updatedAvailHrs, $email);
+    $updateStmt->execute();
+    $updateStmt->close();
+}
+
+$appointmentStmt->close();
+
+// Fetch profile image
 if ($role != 'guest' && !empty($email)) {
-    require '../../../../db/db.php';
-
     $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->bind_result($profileImg);
     $stmt->fetch();
     $stmt->close();
-    $conn->close();
 
     $profileImg = '' . $profileImg;
 }
 
-
+$conn->close();
 ?>
+
 
 
 <!DOCTYPE html>

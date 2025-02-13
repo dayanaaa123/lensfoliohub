@@ -8,23 +8,20 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $role = $_SESSION['role']; 
 
-require '../../../../db/db.php';
+require '../../../../db/db.php'; // Include only once
 
 // Fetch profile image if not a guest
 if ($role != 'guest' && !empty($email)) {
-    require '../../../../db/db.php';
-
     $stmt = $conn->prepare("SELECT profile_image FROM about_me WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->bind_result($profileImg);
     $stmt->fetch();
-
-
+    $stmt->close();  // Close statement properly
 }
 
-
-$sql = "SELECT id, template, profile_image, gallery_name FROM template1 WHERE email = ?";
+// Fetch projects
+$sql = "SELECT * FROM template1 WHERE email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();
