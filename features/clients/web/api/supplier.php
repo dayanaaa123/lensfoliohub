@@ -12,7 +12,7 @@
 if ($role != 'guest' && !empty($email)) {
     require '../../../../db/db.php';
 
-    $stmt = $conn->prepare("SELECT profile_img FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT profile_image FROM about_me WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->bind_result($profileImg);

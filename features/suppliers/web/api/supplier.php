@@ -79,7 +79,7 @@
                     <?php if ($role != 'guest') { ?>
                         <div class="dropdown">
                             <button class="btn btn-theme dropdown-toggle" type=" button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-img" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #000;" >
+                            <img src="../../../../assets/img/profile/<?php echo htmlspecialchars($profileImg); ?>" alt="Profile" class="profile-img" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #000;" >
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <li><a class="dropdown-item" href="about-me.php">Main Profile</a></li>
