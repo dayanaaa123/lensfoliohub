@@ -132,7 +132,7 @@
     $sql = "SELECT 
                 u.name,
                 u.email,
-                u.profile_img,
+                a.profile_image,
                 a.location_text,
                 a.profession,
                 a.age,
@@ -164,7 +164,7 @@
                         <div class="top p-0"></div>
                         <div class="d-flex">
                             <div class="col-md-4">
-                                <img src="../../../../assets/img/profile/' . htmlspecialchars($user['profile_img']) . '" class="img-fluid profile" alt="Photographer">
+                                <img src="../../../../assets/img/profile/' . htmlspecialchars($user['profile_image']) . '" class="img-fluid profile" alt="Photographer">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
