@@ -23,10 +23,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = $user['password'];
 
         // Check if the account is disabled in the reports table
-        $reportStmt = $conn->prepare("SELECT disable_status FROM users WHERE email = ?");
+        $reportStmt = $conn->prepare("SELECT disable_status FROM reports WHERE reported_email = ?");
         $reportStmt->bind_param("s", $email);
         $reportStmt->execute();
         $reportResult = $reportStmt->get_result();
+
 
         if ($reportResult->num_rows > 0) {
             $report = $reportResult->fetch_assoc();
